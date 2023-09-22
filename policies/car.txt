@@ -1,0 +1,53 @@
+John Doe, Bærvej 12, 1234 Byen
+Police
+Policenummer: PD1234567890 | Kundenummer: 123456 | Gælder fra: 1. november 2023 | Udskriftsdato: 17. september 2023
+
+Bilforsikring
+BIL MODEL XYZ
+Registreringsnummer: AB12345 | Første registreringsdato: 01.01.2017 | Årligt kørselsbehov: 15,000
+
+Pris i kroner (2023)
+Nuværende præmie: 4.869,90
+Ny præmie: 5.415,05
+Præmie ekskl. gebyrer, afgifter og bidrag: 4.763,21
+Statsafgift: 361,97
+Skadeforsikringsafgift til staten: 43,12
+
+Din forsikring
+Dækker: Ansvar, Kasko, Førerplads, Glas Plus
+Dækker ikke: Ung fører, Lånebil plus, Vejhjælp, Friskade
+
+Forsikringen dækker
+Forsikringssum i kr. | Selvrisiko i kr.
+Ansvar:
+
+Ansvar, Ting: 27,000,000
+Ansvar, Person: 136,000,000
+Kasko: 4,260
+Førerplads: -
+Glas Plus: 1,000
+Særlige betingelser
+Lånes køretøjet til en person under 25 år, er der dobbelt selvrisiko ved en skade, dog min. 4,000 kr.
+
+Oplyste data
+Præmien er beregnet ud fra dine oplysninger:
+• at du er ejer/bruger af køretøjet
+• at du eller ægtefælle/samlever er den reelle bruger af køretøjet
+
+Forudsætninger
+Forsikringen er under forudsætning af:
+• køretøjet ikke anvendes til taxakørsel
+• køretøjet ikke udlejes uden fører
+• køretøjet ikke anvendes med varer mod betaling
+
+Ejer, bruger og leasingforhold
+Ejer: John Doe | Bruger: John Doe
+
+Risikooplysninger
+Stelnummer: XYZ123456789 | Anvendelse: Privat personkørsel
+Antal år med forsikring i eget navn: 3 | Antal belastende skader de sidste 3 år: 0
+
+Nyheder og ændringer
+Bilforsikring
+Prisen på din forsikring ændrer sig
+Inflationen i hele samfundet stiger, og dermed stiger prisen på reparationer og reservedele mere end normalt.
