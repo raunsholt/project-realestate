@@ -202,6 +202,7 @@ export default function Home() {
   async function onGenerateText(event) {
     event.preventDefault();
     setLoadingText(true);
+
     try {
       const response = await fetch('/api/generateText', {
         method: 'POST',
@@ -209,24 +210,44 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          address, // include address in the request body
+          address,
           textInput1,
           textInput2,
           textInput3,
-          radioValue, // include radioValue in the request body
+          radioValue,
           dataField,
         }),
       });
+
       const data = await response.json();
 
-      setResultField(data.result);
-      setTextGenerated(true);
-      setLoadingText(false);
-
+      // Start polling the server for the task status
+      pollTaskStatus(data.taskId);
     } catch (error) {
-      console.error('Error generating text:', error);
+      console.error('Error starting text generation:', error);
     }
   }
+
+  async function pollTaskStatus(taskId) {
+    const response = await fetch(`/api/taskStatus/${taskId}`);
+    try {
+      const data = await response.json();
+
+      if (data.status === 'completed') {
+        setResultField(data.result);
+        setTextGenerated(true);
+        setLoadingText(false);
+      } else if (data.status === 'running') {
+        // Poll again after a delay
+        setTimeout(() => pollTaskStatus(taskId), 5000);
+      } else {
+        console.error('Error generating text:', data.result);
+      }
+    } catch (error) {
+      console.error('Error polling task status:', error);
+    }
+  }
+
 
   const [suggestions, setSuggestions] = useState([]);
 
