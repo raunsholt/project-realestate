@@ -23,6 +23,7 @@ import {
   Spinner,
   Skeleton
 } from "@chakra-ui/react"
+import { generateBuildingText } from './utils/buildingText'; // Adjust the path based on your project structure
 
 export default function Home() {
   const [address, setAddress] = useState("");
@@ -41,9 +42,16 @@ export default function Home() {
   const [loadingData, setLoadingData] = useState(false);
   const [loadingText, setLoadingText] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [dataAccepted, setDataAccepted] = useState(false);
   const [textGenerated, setTextGenerated] = useState(false);
 
   const [copyButtonText, setCopyButtonText] = useState("Kopiér tekst");
+
+  const styleMapping = {
+    option1: { textStyle: "Beskrivende og saglig", temperature: 0.5 }, // example temperature value
+    option2: { textStyle: "Moderat", temperature: 0.6 }, // example temperature value
+    option3: { textStyle: "Kreativ og malende", temperature: 0.7 }, // example temperature value
+  };  
 
   useEffect(() => {
     // This effect will run whenever dataField changes
@@ -69,6 +77,23 @@ export default function Home() {
     }
   };
 
+  // Scroll start
+  const textGeneratedCardRef = useRef(null);
+  const salgsargumenterCardRef = useRef(null);
+  const boligDataCardRef = useRef(null);
+
+  useEffect(() => {
+    if (dataFetched && boligDataCardRef.current) {
+      boligDataCardRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (dataAccepted && salgsargumenterCardRef.current) {
+      salgsargumenterCardRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (textGenerated && textGeneratedCardRef.current) {
+      textGeneratedCardRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [dataFetched, dataAccepted, textGenerated]);
+
+  // Scroll end
+
   async function onGetData(event) {
     event.preventDefault();
     setLoading(true); // Set loading to true when request starts
@@ -77,117 +102,8 @@ export default function Home() {
     try {
       const response = await fetch(`/api/generate?address=${encodedAddress}`);
       const buildingData = await response.json();
-      let insideArea = buildingData[0].BEBO_ARL;
-      let rooms = buildingData[0].VAERELSE_ANT;
-      let bathrooms = buildingData[0].AntBadevaerelser;
-      let toilets = buildingData[0].AntVandskylToilleter;
-      let build = buildingData[0].bygning.OPFOERELSE_AAR;
-      let reBuild = buildingData[0].bygning.OMBYG_AAR;
-      // let planes = buildingData[0].bygning.ETAGER_ANT;
-      let heating = buildingData[0].bygning.VARMEINSTAL_KODE;
-      let use = buildingData[0].ENH_ANVEND_KODE;
-      let wall = buildingData[0].bygning.YDERVAEG_KODE;
-      let roof = buildingData[0].bygning.TAG_KODE;
 
-      let roofTypes = {
-        "1": "Fladt tag",
-        "2": "Tagpap",
-        "3": "Fibercement",
-        "4": "Cementsten",
-        "5": "Tegl",
-        "6": "Metalplader",
-        "7": "Stråtag",
-        "10": "Fibercement",
-        "11": "PVC",
-        "12": "Glas"
-      };
-
-      let wallTypes = {
-        "1": "Mursten",
-        "2": "Letbeton",
-        "3": "Fibercement",
-        "4": "Bindingsværk",
-        "5": "Træbeklædning",
-        "6": "Betonelementer",
-        "8": "Metalplader",
-        "10": "Fibercement",
-        "11": "PVC",
-        "12": "Glas"
-      };
-
-      let useTypes = {
-        "110": "Stuehus til landbrugsejendom",
-        "120": "Parcelhus",
-        "130": "Rækkehus",
-        "140": "Lejlighed",
-        "510": "Sommerhus",
-        "540": "Kolonihave"
-      };
-
-      let heatingTypes = {
-        "1": "Fjernvarme",
-        "2": "Centralvarme",
-        "3": "Ovne",
-        "5": "Varmepumpe",
-        "6": "Centralvarme med to fyringsenheder",
-        "7": "Elovne",
-        "8": "Gasradiatorer",
-        "9": "Ingen varmeinstallationer"
-      };
-
-      let buildingText = "";
-
-      if (use !== null && useTypes.hasOwnProperty(use)) {
-        use = useTypes[use];
-        buildingText += "Boligtype: " + use + "\n";
-      }
-
-      if (insideArea !== null) {
-        buildingText += "Boligareal: " + insideArea + "\n";
-      }
-
-      if (rooms !== null) {
-        if (rooms <= 2) {
-          buildingText += "Værelser i alt: " + rooms + "\n";
-        }
-        else {
-          rooms = rooms - 1;
-          buildingText += "Stue: 1" + "\n" + "Værelser: " + rooms + "\n";
-        }
-      }
-
-      if (bathrooms !== null) {
-        buildingText += "Badeværelser: " + bathrooms + "\n";
-      }
-
-      if (toilets !== null && toilets > bathrooms) {
-        toilets = toilets - bathrooms;
-        buildingText += "Toiletter: " + toilets + "\n";
-      }
-
-      if (build !== null) {
-        buildingText += "Byggeår: " + build + "\n";
-      }
-
-      if (reBuild !== null && reBuild !== 0) {
-        buildingText += "Ombygget: " + reBuild + "\n";
-      }
-
-      if (roof !== null && roofTypes.hasOwnProperty(roof)) {
-        roof = roofTypes[roof];
-        buildingText += "Tag: " + roof + "\n";
-      }
-
-      if (wall !== null && wallTypes.hasOwnProperty(wall)) {
-        wall = wallTypes[wall];
-        buildingText += "Ydervægge: " + wall + "\n";
-      }
-
-      if (heating !== null && heatingTypes.hasOwnProperty(heating)) {
-        heating = heatingTypes[heating];
-        buildingText += "Varme: " + heating + "\n";
-      }
-
+      const buildingText = generateBuildingText(buildingData);
       setDataField(buildingText);
 
     } catch (error) {
@@ -199,9 +115,17 @@ export default function Home() {
     setLoadingData(false);
   }
 
+  async function onAcceptData(event) {
+    event.preventDefault();
+    setDataAccepted(true);
+  }
+
   async function onGenerateText(event) {
     event.preventDefault();
     setLoadingText(true);
+  
+    const selectedStyle = styleMapping[radioValue]; // derive selectedStyle from radioValue
+  
     try {
       const response = await fetch('/api/generateText', {
         method: 'POST',
@@ -209,24 +133,25 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          address, // include address in the request body
+          address,
           textInput1,
           textInput2,
           textInput3,
-          radioValue, // include radioValue in the request body
+          textStyle: selectedStyle.textStyle,
+          temperature: selectedStyle.temperature,
           dataField,
         }),
       });
       const data = await response.json();
-
+  
       setResultField(data.result);
       setTextGenerated(true);
       setLoadingText(false);
-
+  
     } catch (error) {
       console.error('Error generating text:', error);
     }
-  }
+  }  
 
   const [suggestions, setSuggestions] = useState([]);
 
@@ -315,15 +240,15 @@ export default function Home() {
 
               {dataFetched && (
                 <Skeleton isLoaded={!loadingData} width="100%">
-                  <Card width="100%" >
-                    <form onSubmit={onGenerateText} width="100%">
+                  <Card width="100%" ref={boligDataCardRef}>
+                    <form onSubmit={onAcceptData} width="100%">
                       <CardHeader>
                         <Heading size='md'>Boligdata</Heading>
                       </CardHeader>
                       <CardBody>
                         <VStack spacing={6} width="100%" align="start">
                           <FormControl id="editableDataField">
-                            <FormLabel>Check og redigér boligdata</FormLabel>
+                            <FormLabel>Godkend eller redigér boligdata</FormLabel>
                             <Textarea
                               ref={dataFieldRef}
                               placeholder=""
@@ -334,10 +259,28 @@ export default function Home() {
                               width="100%"
                             />
                           </FormControl>
-                          <Heading as="h4" size="sm">3 gode grunde til at købe boligen</Heading>
+                        </VStack>
+                      </CardBody>
+                      <CardFooter>
+                        <Button type="submit" colorScheme="teal">Godkend boligdata</Button>
+                      </CardFooter>
+                    </form>
+                  </Card>
+                </Skeleton>
+              )}
+
+              {dataAccepted && (
+                <Skeleton isLoaded={!loadingData} width="100%">
+                  <Card width="100%" ref={salgsargumenterCardRef}>
+                    <form onSubmit={onGenerateText} width="100%">
+                      <CardHeader>
+                        <Heading size='md'>Salgsargumenter</Heading>
+                      </CardHeader>
+                      <CardBody>
+                        <VStack spacing={6} width="100%" align="start">
                           <VStack spacing={2} width="100%" align="start">
                             <FormControl id="textInput1">
-                              <FormLabel>Grund #1</FormLabel>
+                              <FormLabel>1. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
                                 placeholder=""
@@ -347,7 +290,7 @@ export default function Home() {
                               />
                             </FormControl>
                             <FormControl id="textInput2">
-                              <FormLabel>Grund #2</FormLabel>
+                              <FormLabel>2. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
                                 placeholder=""
@@ -357,7 +300,7 @@ export default function Home() {
                               />
                             </FormControl>
                             <FormControl id="textInput3">
-                              <FormLabel>Grund #3</FormLabel>
+                              <FormLabel>3. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
                                 placeholder=""
@@ -368,19 +311,19 @@ export default function Home() {
                             </FormControl>
                           </VStack>
                           <FormControl id="radioButtons">
-                            <FormLabel>Hvordan skal skrivestilen være?</FormLabel>
+                            <FormLabel>Vælg en skrivestil</FormLabel>
                             <RadioGroup onChange={setRadioValue} value={radioValue} width="100%">
                               <VStack spacing={2} align="start" width="100%">
-                                <Radio value="option1">Saglig</Radio>
-                                <Radio value="option2">Beskrivende</Radio>
-                                <Radio value="option3">Malende</Radio>
+                                <Radio value="option1">Beskrivende og saglig</Radio>
+                                <Radio value="option2">Moderat</Radio>
+                                <Radio value="option3">Kreativ og malende</Radio>
                               </VStack>
                             </RadioGroup>
                           </FormControl>
                         </VStack>
                       </CardBody>
                       <CardFooter>
-                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst</Button>
+                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
                       </CardFooter>
                     </form>
                   </Card>
@@ -389,7 +332,7 @@ export default function Home() {
 
               {textGenerated && (
                 <Skeleton isLoaded={!loadingText} width="100%">
-                  <Card width="100%">
+                  <Card width="100%" ref={textGeneratedCardRef}>
                     <CardHeader>
                       <Heading size='md'>Resultat</Heading>
                     </CardHeader>

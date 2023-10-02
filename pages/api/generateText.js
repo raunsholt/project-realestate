@@ -1,8 +1,8 @@
 
 export default async function (req, res) {
-    const { address, dataField, textInput1, textInput2, textInput3 } = req.body;
+  const { address, dataField, textInput1, textInput2, textInput3, textStyle, temperature } = req.body;
   
-    if (!address || !dataField || !textInput1 || !textInput2 || !textInput3) {
+    if (!address || !dataField || !textStyle || !textInput1 || !textInput2 || !textInput3) {
       return res.status(400).json({ error: { message: "Please provide all required fields." } });
     }
   
@@ -28,11 +28,11 @@ export default async function (req, res) {
             { 'role': 'system', 'content': `Du er en hjælpsom assistent, der skriver boligsalgstekster.` },
             { 'role': 'user', 'content': `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
             { 'role': 'user', 'content': `Her er tre gode grunde til at købe boligen: 1. ${textInput1} 2. ${textInput2} 3. ${textInput3}` },
-            { 'role': 'user', 'content': `Skrivestilen skal være: INDSÆT HER. Et eksempel til inspiration (kun stil - IKKE indhold) kunne være følgende: INDSÆT HER` },
+            { 'role': 'user', 'content': `Skrivestilen skal være ${textStyle}`},
             { 'role': 'user', 'content': `Generér en salgstekst i den beskrevne skrivestil på ca. 1000 tegn. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
           ],
-          temperature: 0.7,
-          max_tokens: 600
+          temperature: temperature,
+          max_tokens: 500
         })
       });
   
