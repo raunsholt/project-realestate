@@ -23,6 +23,7 @@ import {
   Spinner,
   Skeleton
 } from "@chakra-ui/react"
+import { generateBuildingText } from './utils/buildingText'; // Adjust the path based on your project structure
 
 export default function Home() {
   const [address, setAddress] = useState("");
@@ -41,6 +42,7 @@ export default function Home() {
   const [loadingData, setLoadingData] = useState(false);
   const [loadingText, setLoadingText] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [dataAccepted, setDataAccepted] = useState(false);
   const [textGenerated, setTextGenerated] = useState(false);
 
   const [copyButtonText, setCopyButtonText] = useState("Kopiér tekst");
@@ -77,119 +79,10 @@ export default function Home() {
     try {
       const response = await fetch(`/api/generate?address=${encodedAddress}`);
       const buildingData = await response.json();
-      let insideArea = buildingData[0].BEBO_ARL;
-      let rooms = buildingData[0].VAERELSE_ANT;
-      let bathrooms = buildingData[0].AntBadevaerelser;
-      let toilets = buildingData[0].AntVandskylToilleter;
-      let build = buildingData[0].bygning.OPFOERELSE_AAR;
-      let reBuild = buildingData[0].bygning.OMBYG_AAR;
-      // let planes = buildingData[0].bygning.ETAGER_ANT;
-      let heating = buildingData[0].bygning.VARMEINSTAL_KODE;
-      let use = buildingData[0].ENH_ANVEND_KODE;
-      let wall = buildingData[0].bygning.YDERVAEG_KODE;
-      let roof = buildingData[0].bygning.TAG_KODE;
-
-      let roofTypes = {
-        "1": "Fladt tag",
-        "2": "Tagpap",
-        "3": "Fibercement",
-        "4": "Cementsten",
-        "5": "Tegl",
-        "6": "Metalplader",
-        "7": "Stråtag",
-        "10": "Fibercement",
-        "11": "PVC",
-        "12": "Glas"
-      };
-
-      let wallTypes = {
-        "1": "Mursten",
-        "2": "Letbeton",
-        "3": "Fibercement",
-        "4": "Bindingsværk",
-        "5": "Træbeklædning",
-        "6": "Betonelementer",
-        "8": "Metalplader",
-        "10": "Fibercement",
-        "11": "PVC",
-        "12": "Glas"
-      };
-
-      let useTypes = {
-        "110": "Stuehus til landbrugsejendom",
-        "120": "Parcelhus",
-        "130": "Rækkehus",
-        "140": "Lejlighed",
-        "510": "Sommerhus",
-        "540": "Kolonihave"
-      };
-
-      let heatingTypes = {
-        "1": "Fjernvarme",
-        "2": "Centralvarme",
-        "3": "Ovne",
-        "5": "Varmepumpe",
-        "6": "Centralvarme med to fyringsenheder",
-        "7": "Elovne",
-        "8": "Gasradiatorer",
-        "9": "Ingen varmeinstallationer"
-      };
-
-      let buildingText = "";
-
-      if (use !== null && useTypes.hasOwnProperty(use)) {
-        use = useTypes[use];
-        buildingText += "Boligtype: " + use + "\n";
-      }
-
-      if (insideArea !== null) {
-        buildingText += "Boligareal: " + insideArea + "\n";
-      }
-
-      if (rooms !== null) {
-        if (rooms <= 2) {
-          buildingText += "Værelser i alt: " + rooms + "\n";
-        }
-        else {
-          rooms = rooms - 1;
-          buildingText += "Stue: 1" + "\n" + "Værelser: " + rooms + "\n";
-        }
-      }
-
-      if (bathrooms !== null) {
-        buildingText += "Badeværelser: " + bathrooms + "\n";
-      }
-
-      if (toilets !== null && toilets > bathrooms) {
-        toilets = toilets - bathrooms;
-        buildingText += "Toiletter: " + toilets + "\n";
-      }
-
-      if (build !== null) {
-        buildingText += "Byggeår: " + build + "\n";
-      }
-
-      if (reBuild !== null && reBuild !== 0) {
-        buildingText += "Ombygget: " + reBuild + "\n";
-      }
-
-      if (roof !== null && roofTypes.hasOwnProperty(roof)) {
-        roof = roofTypes[roof];
-        buildingText += "Tag: " + roof + "\n";
-      }
-
-      if (wall !== null && wallTypes.hasOwnProperty(wall)) {
-        wall = wallTypes[wall];
-        buildingText += "Ydervægge: " + wall + "\n";
-      }
-
-      if (heating !== null && heatingTypes.hasOwnProperty(heating)) {
-        heating = heatingTypes[heating];
-        buildingText += "Varme: " + heating + "\n";
-      }
-
+  
+      const buildingText = generateBuildingText(buildingData);
       setDataField(buildingText);
-
+  
     } catch (error) {
       console.error("Error fetching building data:", error);
     }
@@ -198,6 +91,11 @@ export default function Home() {
     setDataFetched(true);
     setLoadingData(false);
   }
+
+  async function onAcceptData(event) {
+    event.preventDefault();
+    setDataAccepted(true);
+    } 
 
   async function onGenerateText(event) {
     event.preventDefault();
@@ -316,7 +214,7 @@ export default function Home() {
               {dataFetched && (
                 <Skeleton isLoaded={!loadingData} width="100%">
                   <Card width="100%" >
-                    <form onSubmit={onGenerateText} width="100%">
+                    <form onSubmit={onAcceptData} width="100%">
                       <CardHeader>
                         <Heading size='md'>Boligdata</Heading>
                       </CardHeader>
@@ -334,10 +232,28 @@ export default function Home() {
                               width="100%"
                             />
                           </FormControl>
-                          <Heading as="h4" size="sm">3 gode grunde til at købe boligen</Heading>
+                        </VStack>
+                      </CardBody>
+                      <CardFooter>
+                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Godkend boligdata</Button>
+                      </CardFooter>
+                    </form>
+                  </Card>
+                </Skeleton>
+              )}
+
+{dataAccepted && (
+                <Skeleton isLoaded={!loadingData} width="100%">
+                  <Card width="100%" >
+                    <form onSubmit={onGenerateText} width="100%">
+                      <CardHeader>
+                        <Heading size='md'>Salgsargumenter</Heading>
+                      </CardHeader>
+                      <CardBody>
+                        <VStack spacing={6} width="100%" align="start">
                           <VStack spacing={2} width="100%" align="start">
                             <FormControl id="textInput1">
-                              <FormLabel>Grund #1</FormLabel>
+                              <FormLabel>1. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
                                 placeholder=""
@@ -347,7 +263,7 @@ export default function Home() {
                               />
                             </FormControl>
                             <FormControl id="textInput2">
-                              <FormLabel>Grund #2</FormLabel>
+                              <FormLabel>2. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
                                 placeholder=""
@@ -357,7 +273,7 @@ export default function Home() {
                               />
                             </FormControl>
                             <FormControl id="textInput3">
-                              <FormLabel>Grund #3</FormLabel>
+                              <FormLabel>3. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
                                 placeholder=""
