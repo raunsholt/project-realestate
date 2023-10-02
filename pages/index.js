@@ -23,7 +23,7 @@ import {
   Spinner,
   Skeleton
 } from "@chakra-ui/react"
-import { generateBuildingText } from './utils/buildingText'; // Adjust the path based on your project structure
+import { generateBuildingText } from '../utils/buildingText'; 
 
 export default function Home() {
   const [address, setAddress] = useState("");
