@@ -47,6 +47,12 @@ export default function Home() {
 
   const [copyButtonText, setCopyButtonText] = useState("Kopiér tekst");
 
+  const styleMapping = {
+    option1: { textStyle: "Beskrivende og saglig", temperature: 0.5 }, // example temperature value
+    option2: { textStyle: "Moderat", temperature: 0.6 }, // example temperature value
+    option3: { textStyle: "Kreativ og malende", temperature: 0.7 }, // example temperature value
+  };  
+
   useEffect(() => {
     // This effect will run whenever dataField changes
     handleDataFieldInput();
@@ -71,6 +77,23 @@ export default function Home() {
     }
   };
 
+  // Scroll start
+  const textGeneratedCardRef = useRef(null);
+  const salgsargumenterCardRef = useRef(null);
+  const boligDataCardRef = useRef(null);
+
+  useEffect(() => {
+    if (dataFetched && boligDataCardRef.current) {
+      boligDataCardRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (dataAccepted && salgsargumenterCardRef.current) {
+      salgsargumenterCardRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (textGenerated && textGeneratedCardRef.current) {
+      textGeneratedCardRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [dataFetched, dataAccepted, textGenerated]);
+
+  // Scroll end
+
   async function onGetData(event) {
     event.preventDefault();
     setLoading(true); // Set loading to true when request starts
@@ -79,10 +102,10 @@ export default function Home() {
     try {
       const response = await fetch(`/api/generate?address=${encodedAddress}`);
       const buildingData = await response.json();
-  
+
       const buildingText = generateBuildingText(buildingData);
       setDataField(buildingText);
-  
+
     } catch (error) {
       console.error("Error fetching building data:", error);
     }
@@ -95,11 +118,14 @@ export default function Home() {
   async function onAcceptData(event) {
     event.preventDefault();
     setDataAccepted(true);
-    } 
+  }
 
   async function onGenerateText(event) {
     event.preventDefault();
     setLoadingText(true);
+  
+    const selectedStyle = styleMapping[radioValue]; // derive selectedStyle from radioValue
+  
     try {
       const response = await fetch('/api/generateText', {
         method: 'POST',
@@ -107,24 +133,25 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          address, // include address in the request body
+          address,
           textInput1,
           textInput2,
           textInput3,
-          radioValue, // include radioValue in the request body
+          textStyle: selectedStyle.textStyle,
+          temperature: selectedStyle.temperature,
           dataField,
         }),
       });
       const data = await response.json();
-
+  
       setResultField(data.result);
       setTextGenerated(true);
       setLoadingText(false);
-
+  
     } catch (error) {
       console.error('Error generating text:', error);
     }
-  }
+  }  
 
   const [suggestions, setSuggestions] = useState([]);
 
@@ -213,7 +240,7 @@ export default function Home() {
 
               {dataFetched && (
                 <Skeleton isLoaded={!loadingData} width="100%">
-                  <Card width="100%" >
+                  <Card width="100%" ref={boligDataCardRef}>
                     <form onSubmit={onAcceptData} width="100%">
                       <CardHeader>
                         <Heading size='md'>Boligdata</Heading>
@@ -221,7 +248,7 @@ export default function Home() {
                       <CardBody>
                         <VStack spacing={6} width="100%" align="start">
                           <FormControl id="editableDataField">
-                            <FormLabel>Check og redigér boligdata</FormLabel>
+                            <FormLabel>Godkend eller redigér boligdata</FormLabel>
                             <Textarea
                               ref={dataFieldRef}
                               placeholder=""
@@ -235,16 +262,16 @@ export default function Home() {
                         </VStack>
                       </CardBody>
                       <CardFooter>
-                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Godkend boligdata</Button>
+                        <Button type="submit" colorScheme="teal">Godkend boligdata</Button>
                       </CardFooter>
                     </form>
                   </Card>
                 </Skeleton>
               )}
 
-{dataAccepted && (
+              {dataAccepted && (
                 <Skeleton isLoaded={!loadingData} width="100%">
-                  <Card width="100%" >
+                  <Card width="100%" ref={salgsargumenterCardRef}>
                     <form onSubmit={onGenerateText} width="100%">
                       <CardHeader>
                         <Heading size='md'>Salgsargumenter</Heading>
@@ -284,19 +311,19 @@ export default function Home() {
                             </FormControl>
                           </VStack>
                           <FormControl id="radioButtons">
-                            <FormLabel>Hvordan skal skrivestilen være?</FormLabel>
+                            <FormLabel>Vælg en skrivestil</FormLabel>
                             <RadioGroup onChange={setRadioValue} value={radioValue} width="100%">
                               <VStack spacing={2} align="start" width="100%">
-                                <Radio value="option1">Saglig</Radio>
-                                <Radio value="option2">Beskrivende</Radio>
-                                <Radio value="option3">Malende</Radio>
+                                <Radio value="option1">Beskrivende og saglig</Radio>
+                                <Radio value="option2">Moderat</Radio>
+                                <Radio value="option3">Kreativ og malende</Radio>
                               </VStack>
                             </RadioGroup>
                           </FormControl>
                         </VStack>
                       </CardBody>
                       <CardFooter>
-                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst</Button>
+                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
                       </CardFooter>
                     </form>
                   </Card>
@@ -305,7 +332,7 @@ export default function Home() {
 
               {textGenerated && (
                 <Skeleton isLoaded={!loadingText} width="100%">
-                  <Card width="100%">
+                  <Card width="100%" ref={textGeneratedCardRef}>
                     <CardHeader>
                       <Heading size='md'>Resultat</Heading>
                     </CardHeader>
