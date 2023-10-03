@@ -4,6 +4,7 @@ import {
   ChakraProvider,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   Input,
   Button,
   Card,
@@ -205,7 +206,7 @@ export default function Home() {
                   </CardHeader>
                   <CardBody>
                     <VStack spacing={4} align="start">
-                      <FormControl id="address" >
+                      <FormControl id="address" isRequired>
                         <FormLabel>Søg adresse</FormLabel>
                         <Input
                           type="text"
@@ -247,7 +248,7 @@ export default function Home() {
                       </CardHeader>
                       <CardBody>
                         <VStack spacing={6} width="100%" align="start">
-                          <FormControl id="editableDataField">
+                          <FormControl id="editableDataField" isRequired>
                             <FormLabel>Godkend eller redigér boligdata</FormLabel>
                             <Textarea
                               ref={dataFieldRef}
@@ -279,7 +280,7 @@ export default function Home() {
                       <CardBody>
                         <VStack spacing={6} width="100%" align="start">
                           <VStack spacing={2} width="100%" align="start">
-                            <FormControl id="textInput1">
+                            <FormControl id="textInput1" isRequired>
                               <FormLabel>1. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
@@ -289,7 +290,7 @@ export default function Home() {
                                 width="100%"
                               />
                             </FormControl>
-                            <FormControl id="textInput2">
+                            <FormControl id="textInput2" isRequired>
                               <FormLabel>2. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
@@ -299,7 +300,7 @@ export default function Home() {
                                 width="100%"
                               />
                             </FormControl>
-                            <FormControl id="textInput3">
+                            <FormControl id="textInput3" isRequired>
                               <FormLabel>3. Grund til at købe boligen</FormLabel>
                               <Input
                                 type="text"
@@ -310,7 +311,7 @@ export default function Home() {
                               />
                             </FormControl>
                           </VStack>
-                          <FormControl id="radioButtons">
+                          <FormControl id="radioButtons" isRequired>
                             <FormLabel>Vælg en skrivestil</FormLabel>
                             <RadioGroup onChange={setRadioValue} value={radioValue} width="100%">
                               <VStack spacing={2} align="start" width="100%">
