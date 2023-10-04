@@ -6,6 +6,7 @@ import {
   FormLabel,
   FormErrorMessage,
   Input,
+  useToast,
   Button,
   Card,
   CardHeader,
@@ -36,6 +37,7 @@ export default function Home() {
   const [resultField, setResultField] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const dataFieldRef = useRef(null);
   const resultFieldRef = useRef(null);
@@ -97,24 +99,35 @@ export default function Home() {
 
   async function onGetData(event) {
     event.preventDefault();
-    setLoading(true); // Set loading to true when request starts
+    setLoading(true);
     const encodedAddress = encodeURIComponent(address);
-
+  
     try {
       const response = await fetch(`/api/generate?address=${encodedAddress}`);
+      if (!response.ok) {
+        throw new Error('Service Unavailable. Please try again later.');
+      }
       const buildingData = await response.json();
-
       const buildingText = generateBuildingText(buildingData);
       setDataField(buildingText);
-
     } catch (error) {
       console.error("Error fetching building data:", error);
+      toast({
+        title: "Kunne ikke hente boligdata",
+        description: error.message || 'Vi beklager. Prøv venligst igen senere.',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return; // Stop function execution here
+    } finally {
+      setLoading(false);
+      setDataFetched(true);
+      setLoadingData(false);
     }
-
-    setLoading(false); // Set loading to false when request completes
-    setDataFetched(true);
-    setLoadingData(false);
   }
+  
+  
 
   async function onAcceptData(event) {
     event.preventDefault();
@@ -124,8 +137,7 @@ export default function Home() {
   async function onGenerateText(event) {
     event.preventDefault();
     setLoadingText(true);
-  
-    const selectedStyle = styleMapping[radioValue]; // derive selectedStyle from radioValue
+    const selectedStyle = styleMapping[radioValue];
   
     try {
       const response = await fetch('/api/generateText', {
@@ -143,16 +155,26 @@ export default function Home() {
           dataField,
         }),
       });
+      if (!response.ok) {
+        throw new Error('Service Unavailable. Please try again later.');
+      }
       const data = await response.json();
-  
       setResultField(data.result);
       setTextGenerated(true);
       setLoadingText(false);
-  
     } catch (error) {
       console.error('Error generating text:', error);
+      toast({
+        title: "Kunne ikke generere tekst",
+        description: error.message || 'Vi beklager. Prøv venligst igen senere.',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return; // Stop function execution here
     }
-  }  
+  }
+  
 
   const [suggestions, setSuggestions] = useState([]);
 
