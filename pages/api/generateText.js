@@ -23,16 +23,16 @@ export default async function (req, res) {
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'gpt-4-1106-preview',
           messages: [
             { 'role': 'system', 'content': `Du er en hjælpsom assistent, der skriver boligsalgstekster.` },
             { 'role': 'user', 'content': `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
             { 'role': 'user', 'content': `Her er tre gode grunde til at købe boligen: 1. ${textInput1} 2. ${textInput2} 3. ${textInput3}` },
             { 'role': 'user', 'content': `Skrivestilen skal være ${textStyle}`},
-            { 'role': 'user', 'content': `Generér en salgstekst i den beskrevne skrivestil på ca. 1000 tegn. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
+            { 'role': 'user', 'content': `Generér en salgstekst i den beskrevne skrivestil på ca. 8000 tegn. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
           ],
           temperature: temperature,
-          max_tokens: 500
+          max_tokens: 600
         })
       });
   
