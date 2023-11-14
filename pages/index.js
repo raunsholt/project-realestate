@@ -25,7 +25,7 @@ import {
   Spinner,
   Skeleton
 } from "@chakra-ui/react"
-import { generateBuildingText } from '../utils/buildingText'; 
+import { generateBuildingText } from '../utils/buildingText';
 
 export default function Home() {
   const [address, setAddress] = useState("");
@@ -54,7 +54,7 @@ export default function Home() {
     option1: { textStyle: "Beskrivende og saglig", temperature: 0.5 }, // example temperature value
     option2: { textStyle: "Moderat", temperature: 0.6 }, // example temperature value
     option3: { textStyle: "Kreativ og malende", temperature: 0.7 }, // example temperature value
-  };  
+  };
 
   useEffect(() => {
     // This effect will run whenever dataField changes
@@ -100,34 +100,34 @@ export default function Home() {
   async function onGetData(event) {
     event.preventDefault();
     setLoading(true);
+    setLoadingData(true);
     const encodedAddress = encodeURIComponent(address);
   
     try {
-      const response = await fetch(`/api/generate?address=${encodedAddress}`);
-      if (!response.ok) {
-        throw new Error('Service Unavailable. Please try again later.');
-      }
-      const buildingData = await response.json();
-      const buildingText = generateBuildingText(buildingData);
-      setDataField(buildingText);
+        const response = await fetch(`/api/generate?address=${encodedAddress}`);
+        if (!response.ok) {
+            throw new Error('Service Unavailable. Please try again later.');
+        }
+        const { buildingData, nearbyPlaces } = await response.json();
+        const buildingText = generateBuildingText(buildingData, nearbyPlaces);
+        setDataField(buildingText);
     } catch (error) {
-      console.error("Error fetching building data:", error);
-      toast({
-        title: "Kunne ikke hente boligdata",
-        description: error.message || 'Vi beklager. Prøv venligst igen senere.',
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      return; // Stop function execution here
+        console.error("Error fetching data:", error);
+        toast({
+            title: "Error",
+            description: error.message || 'An unexpected error occurred.',
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
     } finally {
-      setLoading(false);
-      setDataFetched(true);
-      setLoadingData(false);
+        setLoading(false);
+        setDataFetched(true);
+        setLoadingData(false);
     }
-  }
-  
-  
+}
+
+
 
   async function onAcceptData(event) {
     event.preventDefault();
@@ -138,7 +138,7 @@ export default function Home() {
     event.preventDefault();
     setLoadingText(true);
     const selectedStyle = styleMapping[radioValue];
-  
+
     try {
       const response = await fetch('/api/generateText', {
         method: 'POST',
@@ -174,7 +174,7 @@ export default function Home() {
       return; // Stop function execution here
     }
   }
-  
+
 
   const [suggestions, setSuggestions] = useState([]);
 
