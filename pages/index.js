@@ -102,30 +102,30 @@ export default function Home() {
     setLoading(true);
     setLoadingData(true);
     const encodedAddress = encodeURIComponent(address);
-  
+
     try {
-        const response = await fetch(`/api/generate?address=${encodedAddress}`);
-        if (!response.ok) {
-            throw new Error('Service Unavailable. Please try again later.');
-        }
-        const { buildingData, nearbyPlaces } = await response.json();
-        const buildingText = generateBuildingText(buildingData, nearbyPlaces);
-        setDataField(buildingText);
+      const response = await fetch(`/api/generate?address=${encodedAddress}`);
+      if (!response.ok) {
+        throw new Error('Service Unavailable. Please try again later.');
+      }
+      const { buildingData, nearbyPlaces } = await response.json();
+      const buildingText = generateBuildingText(buildingData, nearbyPlaces);
+      setDataField(buildingText);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        toast({
-            title: "Error",
-            description: error.message || 'An unexpected error occurred.',
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-        });
+      console.error("Error fetching data:", error);
+      toast({
+        title: "Error",
+        description: error.message || 'An unexpected error occurred.',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
-        setLoading(false);
-        setDataFetched(true);
-        setLoadingData(false);
+      setLoading(false);
+      setDataFetched(true);
+      setLoadingData(false);
     }
-}
+  }
 
 
 
@@ -383,6 +383,21 @@ export default function Home() {
                       </Button>
                     </CardFooter>
                   </Card>
+
+                  {/* Embed Google Forms Survey */}
+                  <Box mt={4} width="100%">
+                    <iframe
+                      src="https://docs.google.com/forms/d/e/1FAIpQLSerxid3IqWRlgqkvNUQ-wgLa5aYFtWOlpoIs6xGwSNtSMXgLA/viewform?embedded=true"
+                      width="100%"
+                      height="571"
+                      frameborder="0"
+                      marginheight="0"
+                      marginwidth="0"
+                      style={{ maxWidth: "640px", width: "100%" }}
+                      >
+                      Loading…
+                    </iframe>
+                  </Box>
                 </Skeleton>
               )}
             </VStack>
