@@ -26,8 +26,16 @@ import {
   Skeleton
 } from "@chakra-ui/react"
 import { generateBuildingText } from '../utils/buildingText';
+import ReactGA from 'react-ga4'; 
 
 export default function Home() {
+  // Initialization and Tracking Setup
+  useEffect(() => {
+    // Initialize Google Analytics
+    ReactGA.initialize('G-9SCDQ93V5M');
+    ReactGA.send('pageview');
+  }, []);
+
   const [address, setAddress] = useState("");
   const [textInput1, setTextInput1] = useState("");
   const [textInput2, setTextInput2] = useState("");
@@ -97,8 +105,16 @@ export default function Home() {
 
   // Scroll end
 
+  
+
   async function onGetData(event) {
     event.preventDefault();
+    // Track button click
+    ReactGA.event({
+      category: 'User',
+      action: 'Clicked Hent Data'
+    });
+
     setLoading(true);
     setLoadingData(true);
     const encodedAddress = encodeURIComponent(address);
@@ -131,11 +147,23 @@ export default function Home() {
 
   async function onAcceptData(event) {
     event.preventDefault();
+    // Track button click
+    ReactGA.event({
+      category: 'User',
+      action: 'Clicked Godkend Boligdata'
+    });
     setDataAccepted(true);
   }
 
   async function onGenerateText(event) {
     event.preventDefault();
+
+    // Track button click
+    ReactGA.event({
+      category: 'User',
+      action: 'Clicked Generér Tekst'
+    });
+
     setLoadingText(true);
     const selectedStyle = styleMapping[radioValue];
 
