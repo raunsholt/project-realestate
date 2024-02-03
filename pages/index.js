@@ -26,7 +26,8 @@ import {
   Skeleton
 } from "@chakra-ui/react"
 import { generateBuildingText } from '../utils/buildingText';
-import ReactGA from 'react-ga4'; 
+import ReactGA from 'react-ga4';
+
 
 export default function Home() {
   // Initialization and Tracking Setup
@@ -105,7 +106,7 @@ export default function Home() {
 
   // Scroll end
 
-  
+
 
   async function onGetData(event) {
     event.preventDefault();
@@ -118,30 +119,30 @@ export default function Home() {
     setLoading(true);
     setLoadingData(true);
     const encodedAddress = encodeURIComponent(address);
-  
+
     try {
-        const response = await fetch(`/api/generate?address=${encodedAddress}`);
-        if (!response.ok) {
-            throw new Error('Service Unavailable. Please try again later.');
-        }
-        const { buildingData, nearbyPlaces } = await response.json();
-        const buildingText = generateBuildingText(buildingData, nearbyPlaces);
-        setDataField(buildingText);
+      const response = await fetch(`/api/generate?address=${encodedAddress}`);
+      if (!response.ok) {
+        throw new Error('Service Unavailable. Please try again later.');
+      }
+      const { buildingData, nearbyPlaces } = await response.json();
+      const buildingText = generateBuildingText(buildingData, nearbyPlaces);
+      setDataField(buildingText);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        toast({
-            title: "Error",
-            description: error.message || 'An unexpected error occurred.',
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-        });
+      console.error("Error fetching data:", error);
+      toast({
+        title: "Error",
+        description: error.message || 'An unexpected error occurred.',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
-        setLoading(false);
-        setDataFetched(true);
-        setLoadingData(false);
+      setLoading(false);
+      setDataFetched(true);
+      setLoadingData(false);
     }
-}
+  }
 
 
 
@@ -405,9 +406,12 @@ export default function Home() {
                         </VStack>
                       </Box>
                     </CardBody>
-                    <CardFooter>
+                    <CardFooter display="flex" justifyContent="space-between" alignItems="center">
                       <Button colorScheme="teal" onClick={copyTextToClipboard}>
                         {copyButtonText}
+                      </Button>
+                      <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
+                        Giv feedback
                       </Button>
                     </CardFooter>
                   </Card>
