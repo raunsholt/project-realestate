@@ -8,7 +8,7 @@ const customTheme = {
         Accordion: {
             baseStyle: {
                 root: {
-                    padding: 8,
+                    padding: 0,
                     // bg: 'red',
                     // _expanded: {
                     //     bg: 'blue.500', // Background color for expanded state
