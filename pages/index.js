@@ -4,16 +4,9 @@ import {
   ChakraProvider,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   Input,
   useToast,
   Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  List,
-  ListItem,
   VStack,
   Container,
   Heading,
@@ -22,19 +15,24 @@ import {
   Radio,
   Image,
   Box,
+  HStack,
   Spinner,
-  Skeleton
-} from "@chakra-ui/react"
+  Skeleton,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  List,
+  ListItem,
+} from "@chakra-ui/react";
 import { generateBuildingText } from '../utils/buildingText';
 import ReactGA from 'react-ga4';
+import customTheme from '../theme/customTheme'; // Adjust the path as necessary
 
 export default function Home() {
-  // Initialization and Tracking Setup
-  useEffect(() => {
-    // Initialize Google Analytics
-    ReactGA.initialize('G-9SCDQ93V5M');
-    ReactGA.send('pageview');
-  }, []);
+  // Initialization and state hooks remain unchanged
+  const [expandedIndex, setExpandedIndex] = useState([0]); // Start with the first item open
 
   const [address, setAddress] = useState("");
   const [textInput1, setTextInput1] = useState("");
@@ -100,19 +98,19 @@ export default function Home() {
   };
 
   // Scroll start
-  const textGeneratedCardRef = useRef(null);
-  const salgsargumenterCardRef = useRef(null);
-  const boligDataCardRef = useRef(null);
+  // const textGeneratedCardRef = useRef(null);
+  // const salgsargumenterCardRef = useRef(null);
+  // const boligDataCardRef = useRef(null);
 
-  useEffect(() => {
-    if (dataFetched && boligDataCardRef.current) {
-      boligDataCardRef.current.scrollIntoView({ behavior: 'smooth' });
-    } else if (dataAccepted && salgsargumenterCardRef.current) {
-      salgsargumenterCardRef.current.scrollIntoView({ behavior: 'smooth' });
-    } else if (textGenerated && textGeneratedCardRef.current) {
-      textGeneratedCardRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [dataFetched, dataAccepted, textGenerated]);
+  // useEffect(() => {
+  //   if (dataFetched && boligDataCardRef.current) {
+  //     boligDataCardRef.current.scrollIntoView({ behavior: 'smooth' });
+  //   } else if (dataAccepted && salgsargumenterCardRef.current) {
+  //     salgsargumenterCardRef.current.scrollIntoView({ behavior: 'smooth' });
+  //   } else if (textGenerated && textGeneratedCardRef.current) {
+  //     textGeneratedCardRef.current.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // }, [dataFetched, dataAccepted, textGenerated]);
 
   // Scroll end
 
@@ -146,6 +144,7 @@ export default function Home() {
         isClosable: true,
       });
     } finally {
+      setExpandedIndex([1]); // This assumes the second item is at index 1
       setLoading(false);
       setDataFetched(true);
       setLoadingData(false);
@@ -159,6 +158,7 @@ export default function Home() {
       category: 'User',
       action: 'Clicked Godkend Boligdata'
     });
+    setExpandedIndex([2]); // This assumes the second item is at index 1
     setDataAccepted(true);
   }
 
@@ -197,6 +197,7 @@ export default function Home() {
       setResultField(data.result);
       setTextGenerated(true);
       setLoadingText(false);
+      setExpandedIndex([3]); // This assumes the second item is at index 1
     } catch (error) {
       console.error('Error generating text:', error);
       toast({
@@ -241,69 +242,82 @@ export default function Home() {
   }
 
   return (
-    <ChakraProvider>
-      <Container maxW="container.md">
-        <Box as="div">
-          <Head>
-            <title>Boligtekst AI</title>
-            <link rel="icon" href="/house.png" />
-          </Head>
 
-          <Box as="main" display="flex" flexDirection="column" alignItems="center" pt="4" w="100%">
-            <VStack spacing={6} width="100%" align="start">
-              <Box textAlign="center" width="100%">
-                <Image src="/house.png" w="34px" mb="2" mx="auto" />
-                <Heading as="h3" size="lg">Boligtekst AI</Heading>
-              </Box>
+    <ChakraProvider theme={customTheme}>
+      <Box bgGradient={[
+        // 'linear(to-tr, gray.200, purple.100)',
+        // 'linear(to-t, gray.200, blue.100)',
+        'linear(to-b, gray.100, gray.300)',
+      ]} minH="100vh">
+        <Container maxW="container.md">
 
-              <Card width="100%">
-                <form onSubmit={onGetData}>
-                  <CardHeader>
-                    <Heading size='md'>Adresse</Heading>
-                  </CardHeader>
-                  <CardBody>
-                    <VStack spacing={4} align="start">
-                      <FormControl id="address" isRequired>
-                        <FormLabel>Søg adresse</FormLabel>
-                        <Input
-                          type="text"
-                          placeholder=""
-                          value={address}
-                          onChange={handleAddressChange}
-                          width="100%"
-                        />
-                        {suggestions.length > 0 && (
-                          <List position="absolute" top="100%" width="100%" bg="white" border="1px solid #ccc" zIndex="1">
-                            {suggestions.map((suggestion, index) => (
-                              <ListItem key={index} padding="1" cursor="pointer" onClick={() => {
-                                setAddress(suggestion.tekst);
-                                setSuggestions([]); // Clear suggestions after selecting an address
-                              }}>
-                                {suggestion.tekst}
-                              </ListItem>
-                            ))}
-                          </List>
-                        )}
-                      </FormControl>
-                    </VStack>
+          <Box as="div">
+            <Head>
+              <title>Boligtekst AI</title>
+              <link rel="icon" href="/house.png" />
+            </Head>
 
-                  </CardBody>
-                  <CardFooter>
-                    <Button type="submit" colorScheme="teal" isLoading={loadingData}>
-                      Hent data
-                    </Button>
-                  </CardFooter>
-                </form>
-              </Card>
+            <Box as="main" display="flex" flexDirection="column" alignItems="center" pt="4" w="100%">
+              <VStack spacing={6} width="100%" align="start">
+                <Box textAlign="center" width="100%">
+                  <Image src="/house.png" w="34px" mb="2" mx="auto" />
+                  <Heading as="h3" size="lg">Boligtekst AI</Heading>
+                </Box>
 
-              {dataFetched && (
-                <Skeleton isLoaded={!loadingData} width="100%">
-                  <Card width="100%" ref={boligDataCardRef}>
+                {/* Accordion replaces Card for data fetching section */}
+                <Accordion index={expandedIndex} onChange={(index) => setExpandedIndex(index)} width="100%">
+
+                  {/* Address and Data Fetching Section */}
+                  <AccordionItem>
+                    <form onSubmit={onGetData}>
+                      <h3>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">Adresse</Box>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h3>
+                      <AccordionPanel pb={4}>
+                        <VStack spacing={4} align="start">
+                          <FormControl id="address" isRequired>
+                            <FormLabel>Søg adresse</FormLabel>
+                            <Input
+                              type="text"
+                              placeholder=""
+                              value={address}
+                              onChange={handleAddressChange}
+                              width="100%"
+                            />
+                            {suggestions.length > 0 && (
+                              <List position="absolute" top="100%" width="100%" bg="white" border="1px solid #ccc" zIndex="1">
+                                {suggestions.map((suggestion, index) => (
+                                  <ListItem key={index} padding="1" cursor="pointer" onClick={() => {
+                                    setAddress(suggestion.tekst);
+                                    setSuggestions([]); // Clear suggestions after selecting an address
+                                  }}>
+                                    {suggestion.tekst}
+                                  </ListItem>
+                                ))}
+                              </List>
+                            )}
+                          </FormControl>
+                          <Button type="submit" colorScheme="teal" isLoading={loadingData}>
+                            Hent data
+                          </Button>
+                        </VStack>
+                      </AccordionPanel>
+                    </form>
+                  </AccordionItem>
+
+                  {/* Boligdata Section */}
+                  <AccordionItem>
                     <form onSubmit={onAcceptData} width="100%">
-                      <CardHeader>
-                        <Heading size='md'>Boligdata</Heading>
-                      </CardHeader>
-                      <CardBody>
+                      <h3>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">Boligdata</Box>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h3>
+                      <AccordionPanel pb={4}>
                         <VStack spacing={6} width="100%" align="start">
                           <FormControl id="editableDataField" isRequired>
                             <FormLabel>Godkend eller redigér boligdata</FormLabel>
@@ -317,24 +331,22 @@ export default function Home() {
                               width="100%"
                             />
                           </FormControl>
+                          <Button type="submit" colorScheme="teal">Godkend boligdata</Button>
                         </VStack>
-                      </CardBody>
-                      <CardFooter>
-                        <Button type="submit" colorScheme="teal">Godkend boligdata</Button>
-                      </CardFooter>
+                      </AccordionPanel>
                     </form>
-                  </Card>
-                </Skeleton>
-              )}
+                  </AccordionItem>
 
-              {dataAccepted && (
-                <Skeleton isLoaded={!loadingData} width="100%">
-                  <Card width="100%" ref={salgsargumenterCardRef}>
+                  {/* Salgsargumenter Section */}
+                  <AccordionItem>
                     <form onSubmit={onGenerateText} width="100%">
-                      <CardHeader>
-                        <Heading size='md'>Salgsargumenter</Heading>
-                      </CardHeader>
-                      <CardBody>
+                      <h3>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">Salgsargumenter</Box>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h3>
+                      <AccordionPanel pb={4}>
                         <VStack spacing={6} width="100%" align="start">
                           <VStack spacing={2} width="100%" align="start">
                             <FormControl id="textInput1" isRequired>
@@ -378,56 +390,96 @@ export default function Home() {
                               </VStack>
                             </RadioGroup>
                           </FormControl>
+                          <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
                         </VStack>
-                      </CardBody>
-                      <CardFooter>
-                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
-                      </CardFooter>
+                      </AccordionPanel>
                     </form>
-                  </Card>
-                </Skeleton>
-              )}
+                  </AccordionItem>
 
-              {textGenerated && (
-                <Skeleton isLoaded={!loadingText} width="100%">
-                  <Card width="100%" ref={textGeneratedCardRef}>
-                    <CardHeader>
-                      <Heading size='md'>Resultat</Heading>
-                    </CardHeader>
-                    <CardBody>
-                      <Box as="div" width="100%">
-                        <VStack spacing={4} width="100%" align="start">
-                          <FormControl id="editableResultField">
-                            <FormLabel>Ret boligtekst</FormLabel>
-                            <Textarea
-                              ref={resultFieldRef}
-                              placeholder=""
-                              value={resultField}
-                              onChange={(e) => setResultField(e.target.value)}
-                              onInput={handleResultFieldInput} // handle input event to resize textarea
-                              size="md"
-                              width="100%"
-                            />
-                          </FormControl>
-                        </VStack>
-                      </Box>
-                    </CardBody>
-                    <CardFooter display="flex" justifyContent="space-between" alignItems="center">
-                      <Button colorScheme="teal" onClick={copyTextToClipboard}>
-                        {copyButtonText}
-                      </Button>
-                      <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
-                        Giv feedback
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </Skeleton>
-              )}
-            </VStack>
+                  {/* Text Generation Section */}
+                  <AccordionItem>
+                    <h3>
+                      <AccordionButton>
+                        <Box flex="1" textAlign="left">Generér tekst</Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h3>
+                    <AccordionPanel pb={4}>
+                      <VStack spacing={4} width="100%" align="start">
+                        <FormControl id="editableResultField">
+                          <FormLabel>Ret boligtekst</FormLabel>
+                          <Textarea
+                            ref={resultFieldRef}
+                            placeholder=""
+                            value={resultField}
+                            onChange={(e) => setResultField(e.target.value)}
+                            onInput={handleResultFieldInput} // handle input event to resize textarea
+                            size="md"
+                            width="100%"
+                          />
+                        </FormControl>
+                        <HStack display="flex" justifyContent="space-between" width="100%">
+                          <Button colorScheme="teal" onClick={copyTextToClipboard}>
+                            {copyButtonText}
+                          </Button>
+                          <Button colorScheme="purple" as="a" href="https:21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
+                            Giv feedback
+                          </Button>
+                        </HStack>
+                      </VStack>
+
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+
+                {/* Additional sections can be added as AccordionItem components within the same Accordion */}
+              </VStack>
+            </Box>
           </Box>
-          <Box height="50px" /> {/* This will add extra space at the bottom */}
-        </Box>
-      </Container>
+        </Container>
+      </Box>
     </ChakraProvider>
+
+    //           {textGenerated && (
+    //             <Skeleton isLoaded={!loadingText} width="100%">
+    //               <Card width="100%" ref={textGeneratedCardRef}>
+    //                 <CardHeader>
+    //                   <Heading size='md'>Resultat</Heading>
+    //                 </CardHeader>
+    //                 <CardBody>
+    //                   <Box as="div" width="100%">
+    //                     <VStack spacing={4} width="100%" align="start">
+    //                       <FormControl id="editableResultField">
+    //                         <FormLabel>Ret boligtekst</FormLabel>
+    //                         <Textarea
+    //                           ref={resultFieldRef}
+    //                           placeholder=""
+    //                           value={resultField}
+    //                           onChange={(e) => setResultField(e.target.value)}
+    //                           onInput={handleResultFieldInput} // handle input event to resize textarea
+    //                           size="md"
+    //                           width="100%"
+    //                         />
+    //                       </FormControl>
+    //                     </VStack>
+    //                   </Box>
+    //                 </CardBody>
+    //                 <CardFooter display="flex" justifyContent="space-between" alignItems="center">
+    //                   <Button colorScheme="teal" onClick={copyTextToClipboard}>
+    //                     {copyButtonText}
+    //                   </Button>
+    //                   <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
+    //                     Giv feedback
+    //                   </Button>
+    //                 </CardFooter>
+    //               </Card>
+    //             </Skeleton>
+    //           )}
+    //         </VStack>
+    //       </Box>
+    //       <Box height="50px" /> {/* This will add extra space at the bottom */}
+    //     </Box>
+    //   </Container>
+    // </ChakraProvider>
   );
 }
