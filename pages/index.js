@@ -26,7 +26,7 @@ import {
   Skeleton
 } from "@chakra-ui/react"
 import { generateBuildingText } from '../utils/buildingText';
-import ReactGA from 'react-ga4'; 
+import ReactGA from 'react-ga4';
 
 export default function Home() {
   // Initialization and Tracking Setup
@@ -62,6 +62,17 @@ export default function Home() {
     option1: { textStyle: "Beskrivende og saglig", temperature: 0.5 }, // example temperature value
     option2: { textStyle: "Moderat", temperature: 0.6 }, // example temperature value
     option3: { textStyle: "Kreativ og malende", temperature: 0.7 }, // example temperature value
+  };
+
+  // Handler function to track radio button changes
+  const handleRadioChange = (value) => {
+    setRadioValue(value); // Update state with the new value
+    // Send the event to Google Analytics
+    ReactGA.event({
+      category: 'User',
+      action: 'Radio Selection',
+      label: `Selected ${value}`, // Customize this label to fit your tracking plan
+    });
   };
 
   useEffect(() => {
@@ -105,8 +116,6 @@ export default function Home() {
 
   // Scroll end
 
-  
-
   async function onGetData(event) {
     event.preventDefault();
     // Track button click
@@ -118,32 +127,30 @@ export default function Home() {
     setLoading(true);
     setLoadingData(true);
     const encodedAddress = encodeURIComponent(address);
-  
+
     try {
-        const response = await fetch(`/api/generate?address=${encodedAddress}`);
-        if (!response.ok) {
-            throw new Error('Service Unavailable. Please try again later.');
-        }
-        const { buildingData, nearbyPlaces } = await response.json();
-        const buildingText = generateBuildingText(buildingData, nearbyPlaces);
-        setDataField(buildingText);
+      const response = await fetch(`/api/generate?address=${encodedAddress}`);
+      if (!response.ok) {
+        throw new Error('Service Unavailable. Please try again later.');
+      }
+      const { buildingData, nearbyPlaces } = await response.json();
+      const buildingText = generateBuildingText(buildingData, nearbyPlaces);
+      setDataField(buildingText);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        toast({
-            title: "Error",
-            description: error.message || 'An unexpected error occurred.',
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-        });
+      console.error("Error fetching data:", error);
+      toast({
+        title: "Error",
+        description: error.message || 'An unexpected error occurred.',
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
-        setLoading(false);
-        setDataFetched(true);
-        setLoadingData(false);
+      setLoading(false);
+      setDataFetched(true);
+      setLoadingData(false);
     }
-}
-
-
+  }
 
   async function onAcceptData(event) {
     event.preventDefault();
@@ -363,7 +370,7 @@ export default function Home() {
                           </VStack>
                           <FormControl id="radioButtons" isRequired>
                             <FormLabel>Vælg en skrivestil</FormLabel>
-                            <RadioGroup onChange={setRadioValue} value={radioValue} width="100%">
+                            <RadioGroup onChange={handleRadioChange} value={radioValue} width="100%">
                               <VStack spacing={2} align="start" width="100%">
                                 <Radio value="option1">Beskrivende og saglig</Radio>
                                 <Radio value="option2">Moderat</Radio>
