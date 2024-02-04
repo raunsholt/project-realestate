@@ -313,14 +313,14 @@ export default function Home() {
                     <form onSubmit={onAcceptData} width="100%">
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Boligdata</Box>
+                          <Box flex="1" textAlign="left">Område- og boligdata</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
                       <AccordionPanel pb={4}>
                         <VStack spacing={6} width="100%" align="start">
                           <FormControl id="editableDataField" isRequired>
-                            <FormLabel>Godkend eller redigér boligdata</FormLabel>
+                            <FormLabel>Rediger og godkend data</FormLabel>
                             <Textarea
                               ref={dataFieldRef}
                               placeholder=""
@@ -331,7 +331,7 @@ export default function Home() {
                               width="100%"
                             />
                           </FormControl>
-                          <Button type="submit" colorScheme="teal">Godkend boligdata</Button>
+                          <Button type="submit" colorScheme="teal">Godkend data</Button>
                         </VStack>
                       </AccordionPanel>
                     </form>
@@ -342,7 +342,7 @@ export default function Home() {
                     <form onSubmit={onGenerateText} width="100%">
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Salgsargumenter</Box>
+                          <Box flex="1" textAlign="left">Salgsargumenter og skrivestil</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
@@ -400,14 +400,14 @@ export default function Home() {
                   <AccordionItem>
                     <h3>
                       <AccordionButton>
-                        <Box flex="1" textAlign="left">Generér tekst</Box>
+                        <Box flex="1" textAlign="left">Boligtekst</Box>
                         <AccordionIcon />
                       </AccordionButton>
                     </h3>
                     <AccordionPanel pb={4}>
                       <VStack spacing={4} width="100%" align="start">
                         <FormControl id="editableResultField">
-                          <FormLabel>Ret boligtekst</FormLabel>
+                          <FormLabel>Rediger og kopier boligtekst</FormLabel>
                           <Textarea
                             ref={resultFieldRef}
                             placeholder=""
@@ -431,55 +431,11 @@ export default function Home() {
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
-
-                {/* Additional sections can be added as AccordionItem components within the same Accordion */}
               </VStack>
             </Box>
           </Box>
         </Container>
       </Box>
     </ChakraProvider>
-
-    //           {textGenerated && (
-    //             <Skeleton isLoaded={!loadingText} width="100%">
-    //               <Card width="100%" ref={textGeneratedCardRef}>
-    //                 <CardHeader>
-    //                   <Heading size='md'>Resultat</Heading>
-    //                 </CardHeader>
-    //                 <CardBody>
-    //                   <Box as="div" width="100%">
-    //                     <VStack spacing={4} width="100%" align="start">
-    //                       <FormControl id="editableResultField">
-    //                         <FormLabel>Ret boligtekst</FormLabel>
-    //                         <Textarea
-    //                           ref={resultFieldRef}
-    //                           placeholder=""
-    //                           value={resultField}
-    //                           onChange={(e) => setResultField(e.target.value)}
-    //                           onInput={handleResultFieldInput} // handle input event to resize textarea
-    //                           size="md"
-    //                           width="100%"
-    //                         />
-    //                       </FormControl>
-    //                     </VStack>
-    //                   </Box>
-    //                 </CardBody>
-    //                 <CardFooter display="flex" justifyContent="space-between" alignItems="center">
-    //                   <Button colorScheme="teal" onClick={copyTextToClipboard}>
-    //                     {copyButtonText}
-    //                   </Button>
-    //                   <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
-    //                     Giv feedback
-    //                   </Button>
-    //                 </CardFooter>
-    //               </Card>
-    //             </Skeleton>
-    //           )}
-    //         </VStack>
-    //       </Box>
-    //       <Box height="50px" /> {/* This will add extra space at the bottom */}
-    //     </Box>
-    //   </Container>
-    // </ChakraProvider>
   );
 }
