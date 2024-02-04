@@ -422,7 +422,7 @@ export default function Home() {
                           <Button colorScheme="teal" onClick={copyTextToClipboard}>
                             {copyButtonText}
                           </Button>
-                          <Button colorScheme="purple" as="a" href="https:21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
+                          <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
                             Giv feedback
                           </Button>
                         </HStack>
