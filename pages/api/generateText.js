@@ -23,7 +23,7 @@ export default async function (req, res) {
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4-1106-preview',
+          model: 'gpt-4-0125-preview',
           messages: [
             { 'role': 'system', 'content': `Du er en hjælpsom assistent, der skriver boligsalgstekster.` },
             { 'role': 'user', 'content': `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
