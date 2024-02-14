@@ -33,7 +33,7 @@ import customTheme from '../theme/customTheme'; // Adjust the path as necessary
 export default function Home() {
   // Initialization and state hooks remain unchanged
   const [expandedIndex, setExpandedIndex] = useState([0]); // Start with the first item open
-
+  const [message, setMessage] = useState('');
   const [address, setAddress] = useState("");
   const [textInput1, setTextInput1] = useState("");
   const [textInput2, setTextInput2] = useState("");
@@ -82,6 +82,25 @@ export default function Home() {
     // This effect will run whenever dataField changes
     handleResultFieldInput();
   }, [resultField]);
+
+  useEffect(() => {
+    const eventSource = new EventSource('/api/updates');
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMessage(data.message);
+      // Handle the data received from the server
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('EventSource failed:', error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 
   const handleDataFieldInput = () => {
     if (dataFieldRef.current) {

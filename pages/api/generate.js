@@ -3,6 +3,8 @@ import { Client } from "@googlemaps/google-maps-services-js";
 const client = new Client({});
 
 async function findPlaceByType(address, type) {
+    // Function body commented out to bypass Google Maps API usage
+    /*
     const addressResponse = await fetch(`https://api.dataforsyningen.dk/adresser?q=${address}`);
     const addressData = await addressResponse.json();
 
@@ -29,6 +31,8 @@ async function findPlaceByType(address, type) {
     }
 
     return null; // Return null if no place found
+    */
+    return null;
 }
 
 // Main handler function
@@ -45,33 +49,10 @@ export default async function handler(req, res) {
             const buildingResponse = await fetch(`https://api.dataforsyningen.dk/bbrlight/enheder?adresseid=${adresseid}`);
             const buildingData = await buildingResponse.json();
 
-            const placeTypes = [
-                'primary_school',
-                /*'bus_station',*/ 'subway_station', 'train_station', 'light_rail_station',
-                'shopping_mall', 'supermarket', 'park', /*'tourist_attraction',*/
-                'restaurant', 'cafe', 'bakery', 'meal_takeaway',
-                'movie_theater', 'night_club', 'stadium'
-            ];
-
-            const placeTypeMapping = {
-                'primary_school': 'Nærmeste skole',
-                // 'bus_station': 'Bus',
-                'subway_station': 'Metro',
-                'train_station': 'Tog',
-                'light_rail_station': 'Letbane',
-                'shopping_mall': 'Indkøbscenter',
-                'supermarket': 'Supermarked',
-                'park': 'Natur',
-                // 'tourist_attraction': 'Attraktion',
-                'restaurant': 'Restaurant',
-                'cafe': 'Cafe',
-                'bakery': 'Bager',
-                'meal_takeaway': 'Takeaway',
-                'movie_theater': 'Biograf',
-                'night_club': 'Klub',
-                'stadium': 'Stadion'
-            };
-
+            /*
+            // Code related to nearbyPlaces is commented out
+            const placeTypes = [ ... ];
+            const placeTypeMapping = { ... };
             let nearbyPlaces = {};
 
             for (const type of placeTypes) {
@@ -81,10 +62,11 @@ export default async function handler(req, res) {
                     nearbyPlaces[friendlyName] = `${place.name} (${place.radius})`;
                 }
             }
-
+            */
 
             if (buildingData.length > 0) {
-                res.status(200).json({ buildingData, nearbyPlaces });
+                // Modified to exclude nearbyPlaces from the response
+                res.status(200).json({ buildingData /*, nearbyPlaces*/ });
             } else {
                 res.status(404).json({ message: "No building data found for the specified address." });
             }
