@@ -18,6 +18,7 @@ import {
   HStack,
   Spinner,
   Skeleton,
+  Tooltip,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -25,6 +26,7 @@ import {
   AccordionIcon,
   List,
   ListItem,
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Progress
 } from "@chakra-ui/react";
 import { generateBuildingText } from '../utils/buildingText';
 import ReactGA from 'react-ga4';
@@ -47,6 +49,10 @@ export default function Home() {
 
   const dataFieldRef = useRef(null);
   const resultFieldRef = useRef(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [progressValue, setProgressValue] = useState(0); // Use this if you plan on showing determinate progress
+
 
   const [loadingData, setLoadingData] = useState(false);
   const [loadingText, setLoadingText] = useState(false);
@@ -131,8 +137,8 @@ export default function Home() {
       if (!response.ok) {
         throw new Error('Service Unavailable. Please try again later.');
       }
-      const { buildingData, nearbyPlaces } = await response.json();
-      const buildingText = generateBuildingText(buildingData, nearbyPlaces);
+      const { buildingData /*, nearbyPlaces */ } = await response.json();
+      const buildingText = generateBuildingText(buildingData/*, nearbyPlaces*/);
       setDataField(buildingText);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -148,6 +154,11 @@ export default function Home() {
       setLoading(false);
       setDataFetched(true);
       setLoadingData(false);
+      setTimeout(() => {
+        if (dataFieldRef.current) {
+          dataFieldRef.current.focus(); // Focus on the resultField textarea
+        }
+      }, 500); // Adjust timing as needed
     }
   }
 
@@ -165,7 +176,11 @@ export default function Home() {
   async function onGenerateText(event) {
     event.preventDefault();
 
-    // Track button click
+    // Show the modal and initialize the progress
+    setIsModalOpen(true);
+    setProgressValue(0); // Starting the progress at 0%
+
+    // Track the button click
     ReactGA.event({
       category: 'User',
       action: 'Clicked Generér Tekst'
@@ -190,14 +205,28 @@ export default function Home() {
           dataField,
         }),
       });
+
       if (!response.ok) {
         throw new Error('Service Unavailable. Please try again later.');
       }
+
       const data = await response.json();
+
+      // Assume some progression here
+      setProgressValue(100); // Assuming the operation completes immediately, set to 100%
+
       setResultField(data.result);
       setTextGenerated(true);
       setLoadingText(false);
       setExpandedIndex([3]); // This assumes the second item is at index 1
+      // Ensure the modal is open for a bit before closing to show complete
+      setTimeout(() => {
+        setIsModalOpen(false); // Hide modal
+        if (resultFieldRef.current) {
+          resultFieldRef.current.focus(); // Focus on the resultField textarea
+        }
+      }, 500); // Adjust timing as needed
+
     } catch (error) {
       console.error('Error generating text:', error);
       toast({
@@ -207,9 +236,12 @@ export default function Home() {
         duration: 5000,
         isClosable: true,
       });
-      return; // Stop function execution here
+    } finally {
+      setLoadingText(false);
+      setIsModalOpen(false); // Hide modal on completion or error
     }
   }
+
 
 
   const [suggestions, setSuggestions] = useState([]);
@@ -244,6 +276,18 @@ export default function Home() {
   return (
 
     <ChakraProvider theme={customTheme}>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Genererer din boligtekst</ModalHeader>
+          <ModalBody>
+            <Progress value={progressValue} size="md" isIndeterminate="true" />
+            {/* isIndeterminate will make the progress bar animate continuously if progressValue is not set */}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
       <Box bgGradient={[
         // 'linear(to-tr, gray.200, purple.100)',
         // 'linear(to-t, gray.200, blue.100)',
@@ -320,16 +364,18 @@ export default function Home() {
                       <AccordionPanel pb={4}>
                         <VStack spacing={6} width="100%" align="start">
                           <FormControl id="editableDataField" isRequired>
-                            <FormLabel>Rediger og godkend data</FormLabel>
-                            <Textarea
-                              ref={dataFieldRef}
-                              placeholder=""
-                              value={dataField}
-                              onChange={(e) => setDataField(e.target.value)}
-                              onInput={handleDataFieldInput} // handle input event to resize textarea
-                              size="md"
-                              width="100%"
-                            />
+                            <FormLabel>Rediger, tilføj og godkend data</FormLabel>
+                            <Tooltip label="Du kan redigere og tilføje informationen her" placement="top" hasArrow>
+                              <Textarea
+                                ref={dataFieldRef}
+                                placeholder=""
+                                value={dataField}
+                                onChange={(e) => setDataField(e.target.value)}
+                                onInput={handleDataFieldInput} // handle input event to resize textarea
+                                size="md"
+                                width="100%"
+                              />
+                            </Tooltip>
                           </FormControl>
                           <Button type="submit" colorScheme="teal">Godkend data</Button>
                         </VStack>
@@ -408,15 +454,17 @@ export default function Home() {
                       <VStack spacing={4} width="100%" align="start">
                         <FormControl id="editableResultField">
                           <FormLabel>Rediger og kopier boligtekst</FormLabel>
-                          <Textarea
-                            ref={resultFieldRef}
-                            placeholder=""
-                            value={resultField}
-                            onChange={(e) => setResultField(e.target.value)}
-                            onInput={handleResultFieldInput} // handle input event to resize textarea
-                            size="md"
-                            width="100%"
-                          />
+                          <Tooltip label="Du kan tilrette din boligtekst her" placement="top" hasArrow>
+                            <Textarea
+                              ref={resultFieldRef}
+                              placeholder=""
+                              value={resultField}
+                              onChange={(e) => setResultField(e.target.value)}
+                              onInput={handleResultFieldInput} // handle input event to resize textarea
+                              size="md"
+                              width="100%"
+                            />
+                          </Tooltip>
                         </FormControl>
                         <HStack display="flex" justifyContent="space-between" width="100%">
                           <Button colorScheme="teal" onClick={copyTextToClipboard}>
