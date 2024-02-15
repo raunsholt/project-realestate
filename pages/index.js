@@ -223,7 +223,7 @@ export default function Home() {
         title: "Kunne ikke generere tekst",
         description: error.message || 'Vi beklager. Prøv venligst igen senere.',
         status: "error",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       return; // Stop function execution here
@@ -332,7 +332,7 @@ export default function Home() {
                     <form onSubmit={onAcceptData} width="100%">
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Område- og boligdata</Box>
+                          <Box flex="1" textAlign="left">Boligdata</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
