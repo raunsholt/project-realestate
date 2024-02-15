@@ -260,8 +260,8 @@ export default function Home() {
             <Box as="main" display="flex" flexDirection="column" alignItems="center" pt="4" w="100%">
               <VStack spacing={6} width="100%" align="start">
                 <Box textAlign="center" width="100%">
-                  <Image src="/house.png" w="34px" mb="2" mx="auto" />
-                  <Heading as="h3" size="lg">Boligtekst AI</Heading>
+                  {/* <Image src="/house.png" w="34px" mb="2" mx="auto" /> */}
+                  <Heading as="h3" size="lg">boligtekst.ai</Heading>
                 </Box>
 
                 {/* Accordion replaces Card for data fetching section */}
@@ -313,7 +313,7 @@ export default function Home() {
                     <form onSubmit={onAcceptData} width="100%">
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Område- og boligdata</Box>
+                          <Box flex="1" textAlign="left">Boligdata</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
