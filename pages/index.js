@@ -277,11 +277,11 @@ export default function Home() {
 
     <ChakraProvider theme={customTheme}>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isCentered closeOnOverlayClick={false} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Genererer din boligtekst</ModalHeader>
-          <ModalBody>
+          <ModalBody pb={6}>
             <Progress value={progressValue} size="md" isIndeterminate="true" />
             {/* isIndeterminate will make the progress bar animate continuously if progressValue is not set */}
           </ModalBody>
@@ -365,7 +365,7 @@ export default function Home() {
                         <VStack spacing={6} width="100%" align="start">
                           <FormControl id="editableDataField" isRequired>
                             <FormLabel>Rediger, tilføj og godkend data</FormLabel>
-                            <Tooltip label="Du kan redigere og tilføje informationen her" placement="top" hasArrow>
+                            <Tooltip label="Du kan redigere og tilføje information her" placement="top" hasArrow>
                               <Textarea
                                 ref={dataFieldRef}
                                 placeholder=""
