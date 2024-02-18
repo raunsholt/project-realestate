@@ -33,6 +33,12 @@ import ReactGA from 'react-ga4';
 import customTheme from '../theme/customTheme'; // Adjust the path as necessary
 
 export default function Home() {
+  // Initialization and Tracking Setup
+  useEffect(() => {
+    // Initialize Google Analytics
+    ReactGA.initialize('G-9SCDQ93V5M');
+    ReactGA.send('pageview');
+  }, []);
   // Initialization and state hooks remain unchanged
   const [expandedIndex, setExpandedIndex] = useState([0]); // Start with the first item open
 
