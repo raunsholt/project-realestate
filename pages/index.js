@@ -304,13 +304,13 @@ export default function Home() {
           <Box as="div">
             <Head>
               <title>Boligtekst AI</title>
-              <link rel="icon" href="/bt_logo.png" />
+              <link rel="icon" href="/boligtekst-logo.png" />
             </Head>
 
             <Box as="main" display="flex" flexDirection="column" alignItems="center" pt="4" w="100%">
               <VStack spacing={6} width="100%" align="start">
                 <Box textAlign="center" width="100%">
-                  <Image src="/bt_logo.png" w="34px" mb="2" mx="auto" />
+                  <Image src="/boligtekst-logo.png" w="34px" mb="2" mx="auto" />
                   <Heading as="h3" size="lg">boligtekst.ai</Heading>
                 </Box>
 
