@@ -304,13 +304,13 @@ export default function Home() {
           <Box as="div">
             <Head>
               <title>Boligtekst AI</title>
-              <link rel="icon" href="/house.png" />
+              <link rel="icon" href="/bt_logo.png" />
             </Head>
 
             <Box as="main" display="flex" flexDirection="column" alignItems="center" pt="4" w="100%">
               <VStack spacing={6} width="100%" align="start">
                 <Box textAlign="center" width="100%">
-                  {/* <Image src="/house.png" w="34px" mb="2" mx="auto" /> */}
+                  <Image src="/bt_logo.png" w="34px" mb="2" mx="auto" />
                   <Heading as="h3" size="lg">boligtekst.ai</Heading>
                 </Box>
 
@@ -322,7 +322,7 @@ export default function Home() {
                     <form onSubmit={onGetData}>
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Adresse</Box>
+                          <Box flex="1" textAlign="left">1. Adresse</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
@@ -363,7 +363,7 @@ export default function Home() {
                     <form onSubmit={onAcceptData} width="100%">
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Boligdata</Box>
+                          <Box flex="1" textAlign="left">2. Boligdata</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
@@ -394,7 +394,7 @@ export default function Home() {
                     <form onSubmit={onGenerateText} width="100%">
                       <h3>
                         <AccordionButton>
-                          <Box flex="1" textAlign="left">Salgsargumenter og skrivestil</Box>
+                          <Box flex="1" textAlign="left">3. Salgsargumenter og skrivestil</Box>
                           <AccordionIcon />
                         </AccordionButton>
                       </h3>
@@ -452,7 +452,7 @@ export default function Home() {
                   <AccordionItem>
                     <h3>
                       <AccordionButton>
-                        <Box flex="1" textAlign="left">Boligtekst</Box>
+                        <Box flex="1" textAlign="left">4. Boligtekst</Box>
                         <AccordionIcon />
                       </AccordionButton>
                     </h3>
