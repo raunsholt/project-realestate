@@ -143,8 +143,8 @@ export default function Home() {
       if (!response.ok) {
         throw new Error('Service Unavailable. Please try again later.');
       }
-      const { buildingData /*, nearbyPlaces */ } = await response.json();
-      const buildingText = generateBuildingText(buildingData/*, nearbyPlaces*/);
+      const { buildingData, estateData, propertyData /*, nearbyPlaces */ } = await response.json();
+      const buildingText = generateBuildingText(buildingData, estateData, propertyData/*, nearbyPlaces*/);
       setDataField(buildingText);
     } catch (error) {
       console.error("Error fetching data:", error);
