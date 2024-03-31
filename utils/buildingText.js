@@ -1,15 +1,23 @@
 // buildingText.js
-export function generateBuildingText(buildingData, nearbyPlaces) {
-  let insideArea = buildingData[0].BEBO_ARL;
-  let rooms = buildingData[0].VAERELSE_ANT;
-  let bathrooms = buildingData[0].AntBadevaerelser;
-  let toilets = buildingData[0].AntVandskylToilleter;
-  let build = buildingData[0].bygning.OPFOERELSE_AAR;
-  let reBuild = buildingData[0].bygning.OMBYG_AAR;
-  let heating = buildingData[0].bygning.VARMEINSTAL_KODE;
-  let use = buildingData[0].ENH_ANVEND_KODE;
-  let wall = buildingData[0].bygning.YDERVAEG_KODE;
-  let roof = buildingData[0].bygning.TAG_KODE;
+export function generateBuildingText(buildingData, estateData, propertyData, nearbyPlaces) {
+  console.log("builinData");
+   console.log(buildingData[0]);
+  console.log("popertyData");
+  console.log(propertyData[0]);
+  console.log("estateData");
+  console.log(estateData[0]);
+
+  let insideArea = buildingData[0].enh027ArealTilBeboelse;
+  let rooms = buildingData[0].enh031AntalVærelser;
+  let bathrooms = buildingData[0].enh066AntalBadeværelser;
+  let toilets = buildingData[0].enh065AntalVandskylledeToiletter;
+  let build = estateData[0]['byg026Opførelsesår'];
+  let reBuild = estateData[0]['byg027OmTilbygningsår'];
+  let heating = estateData[0]['byg056Varmeinstallation'];
+  let use = buildingData[0].enh020EnhedensAnvendelse;
+  let wall = estateData[0]['byg032YdervæggensMateriale'];
+  let roof = estateData[0]['byg033Tagdækningsmateriale'];
+  // let levels = estateData[0]['byg054AntalEtager'];
 
   let roofTypes = {
     "1": "Fladt tag",
@@ -108,6 +116,10 @@ export function generateBuildingText(buildingData, nearbyPlaces) {
     heating = heatingTypes[heating];
     buildingText += "Varme: " + heating + "\n";
   }
+
+  // if (levels !== null) {
+  //   buildingText += "Etager: " + levels + "\n";
+  // }
 
   if (nearbyPlaces) {
     buildingText += "\n" + "Nærområdet" + "\n";
