@@ -1,3 +1,4 @@
+// index.js
 import Head from "next/head";
 import { useState, useRef, useEffect } from "react";
 import {

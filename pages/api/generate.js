@@ -1,4 +1,4 @@
-
+// generate.js
 // Main handler function
 export default async function handler(req, res) {
     const { address } = req.query;
@@ -9,7 +9,6 @@ export default async function handler(req, res) {
         // Fetch building data
         const addressResponse = await fetch(`https://api.dataforsyningen.dk/adresser?q=${address}`);
         const addressData = await addressResponse.json();
-        // console.log("adressdata: " + addressData[0]);
 
         if (addressData.length > 0) {
             const adresseid = addressData[0].id;
@@ -17,16 +16,12 @@ export default async function handler(req, res) {
             const buildingData = await buildingResponse.json();
 
             const estateId = buildingData[0]["bygning"];
-            // console.log("bygning: " + estateId);
             const estateResponse = await fetch(`https://services.datafordeler.dk/BBR/BBRPublic/1/rest/bygning?username=TWTEVQUXQX&password=Free-84238&Format=JSON&Id=${estateId}`);
             const estateData = await estateResponse.json();
-            console.log(estateData[0]);
 
             const propertyId = estateData[0]["grund"];
-            // console.log("property: " + propertyId);
             const propertyResponse = await fetch(`https://services.datafordeler.dk/BBR/BBRPublic/1/rest/bygning?username=TWTEVQUXQX&password=Free-84238&Format=JSON&Grund=${propertyId}`);
             const propertyData = await propertyResponse.json();
-            //console.log(propertyData[0]);
 
             if (buildingData.length > 0) {
                 res.status(200).json({ buildingData, propertyData, estateData});

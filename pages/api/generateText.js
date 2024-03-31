@@ -1,3 +1,4 @@
+// generateText.js
 
 export default async function (req, res) {
   const { address, dataField, textInput1, textInput2, textInput3, textStyle, temperature } = req.body;
