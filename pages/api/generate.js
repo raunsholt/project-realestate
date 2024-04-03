@@ -91,6 +91,7 @@ export default async function handler(req, res) {
 
     try {
         // Fetch building data
+        // console.log(address)
         const addressResponse = await fetch(`https://api.dataforsyningen.dk/adresser?q=${address}`);
         const addressData = await addressResponse.json();
 
@@ -108,7 +109,7 @@ export default async function handler(req, res) {
             const propertyData = await propertyResponse.json();
 
             if (buildingData.length > 0) {
-                res.status(200).json({ buildingData, propertyData, estateData});
+                res.status(200).json({ buildingData, propertyData, estateData });
             } else {
                 res.status(404).json({ message: "No building data found for the specified address." });
             }
