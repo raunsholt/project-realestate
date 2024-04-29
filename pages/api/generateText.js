@@ -30,7 +30,7 @@ export default async function (req, res) {
             { 'role': 'user', 'content': `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
             { 'role': 'user', 'content': `Her er tre gode grunde til at købe boligen: 1. ${textInput1} 2. ${textInput2} 3. ${textInput3}` },
             { 'role': 'user', 'content': `Skrivestilen skal være ${textStyle}`},
-            { 'role': 'user', 'content': `Generér en salgstekst i den beskrevne skrivestil på ca. 800 tegn. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
+            { 'role': 'user', 'content': `Generér tre variationer af en salgstekst i den beskrevne skrivestil. En med overskriften *Web* til en hjemmeside på ca. 800 tegn. En med overskriften *Print* til at have i butiksvinduer på ca. 400 tegn. En med overskriften *SoMe* til sociale medier på ca. 200 tegn. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
           ],
           temperature: temperature,
           max_tokens: 600
