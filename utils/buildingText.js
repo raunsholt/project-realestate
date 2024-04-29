@@ -1,11 +1,11 @@
 // buildingText.js
 export function generateBuildingText(buildingData, estateData, propertyData, nearbyPlaces) {
-  console.log("builinData");
-   console.log(buildingData[0]);
-  console.log("popertyData");
-  console.log(propertyData[0]);
-  console.log("estateData");
-  console.log(estateData[0]);
+  // console.log("builinData");
+  //  console.log(buildingData[0]);
+  // console.log("popertyData");
+  // console.log(propertyData[0]);
+  // console.log("estateData");
+  // console.log(estateData[0]);
 
   let insideArea = buildingData[0].enh027ArealTilBeboelse;
   let rooms = buildingData[0].enh031AntalVærelser;
@@ -98,7 +98,7 @@ export function generateBuildingText(buildingData, estateData, propertyData, nea
     buildingText += "Byggeår: " + build + "\n";
   }
 
-  if (reBuild !== null && reBuild !== 0) {
+  if (reBuild !== null && reBuild !== 0 && reBuild !== undefined) {
     buildingText += "Ombygget: " + reBuild + "\n";
   }
 

@@ -138,6 +138,7 @@ export default function Home() {
     setLoading(true);
     setLoadingData(true);
     const encodedAddress = encodeURIComponent(address);
+    // console.log(encodedAddress);
 
     try {
       const response = await fetch(`/api/generate?address=${encodedAddress}`);
