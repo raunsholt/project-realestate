@@ -443,7 +443,7 @@ export default function Home() {
                               width="100%"
                             />
                           </Tooltip>
-                          <Text>{webTextCount} tegn</Text>
+                          <Text fontSize="sm" textAlign="right" fontStyle="italic">{webTextCount} tegn</Text>
                         </FormControl>
                         <FormControl id="printText">
                           <FormLabel>Print tekst</FormLabel>
@@ -457,7 +457,7 @@ export default function Home() {
                               width="100%"
                             />
                           </Tooltip>
-                          <Text>{printTextCount} tegn</Text>
+                          <Text fontSize="sm" textAlign="right" fontStyle="italic">{printTextCount} tegn</Text>
                         </FormControl>
                         <FormControl id="someText">
                           <FormLabel>SoMe tekst</FormLabel>
@@ -471,12 +471,12 @@ export default function Home() {
                               width="100%"
                             />
                           </Tooltip>
-                          <Text>{someTextCount} tegn</Text>
+                          <Text fontSize="sm" textAlign="right" fontStyle="italic">{someTextCount} tegn</Text>
                         </FormControl>
                         <HStack display="flex" justifyContent="space-between" width="100%">
-                          <Button colorScheme="teal" onClick={copyTextToClipboard}>
+                          {/* <Button colorScheme="teal" onClick={copyTextToClipboard}>
                             {copyButtonText}
-                          </Button>
+                          </Button> */}
                           <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
                             Giv feedback
                           </Button>
