@@ -432,7 +432,7 @@ export default function Home() {
                     <AccordionPanel pb={4}>
                       <VStack spacing={4} width="100%" align="start">
                         <FormControl id="webText">
-                          <FormLabel>Web tekst</FormLabel>
+                          <FormLabel>Hjemmeside</FormLabel>
                           <Tooltip label="Rediger web teksten" placement="top" hasArrow>
                             <Textarea
                               ref={webTextRef}
@@ -446,7 +446,7 @@ export default function Home() {
                           <Text fontSize="sm" textAlign="right" fontStyle="italic">{webTextCount} tegn</Text>
                         </FormControl>
                         <FormControl id="printText">
-                          <FormLabel>Print tekst</FormLabel>
+                          <FormLabel>Vindue</FormLabel>
                           <Tooltip label="Rediger print teksten" placement="top" hasArrow>
                             <Textarea
                               ref={printTextRef}
@@ -460,7 +460,7 @@ export default function Home() {
                           <Text fontSize="sm" textAlign="right" fontStyle="italic">{printTextCount} tegn</Text>
                         </FormControl>
                         <FormControl id="someText">
-                          <FormLabel>SoMe tekst</FormLabel>
+                          <FormLabel>SoMe</FormLabel>
                           <Tooltip label="Rediger SoMe teksten" placement="top" hasArrow>
                             <Textarea
                               ref={someTextRef}
