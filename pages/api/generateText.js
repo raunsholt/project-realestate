@@ -28,7 +28,7 @@ export default async function (req, res) {
           { role: 'user', content: `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
           { role: 'user', content: `Her er tre gode grunde til at købe boligen: 1. ${textInput1} 2. ${textInput2} 3. ${textInput3}` },
           { role: 'user', content: `Skrivestilen skal være ${textStyle}` },
-          { role: 'user', content: `Generér tre variationer af en salgstekst i den beskrevne skrivestil. En til hjemmesider på ca. 800 tegn med én overskrift inkluderet. En til butiksvinduer på ca. 400 tegn. med én overskrift inkluderet. En til sociale medier på ca. 200 tegn uden overskrift eller hashtags. Brug tre bindestreger (---) til at adskille afsnittene. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
+          { role: 'user', content: `Generér tre variationer af en salgstekst i den beskrevne skrivestil. En til hjemmesider på ca. 800 tegn med en overskrift. En til butiksvinduer på ca. 400 tegn. med en overskrift. Der skal kun være indholdsoverskrifter IKKE **Hjemmsider**, **Butiksvindue** eller lignende. En til sociale medier på ca. 200 tegn uden overskrift eller hashtags. Brug tre bindestreger (---) til at adskille afsnittene. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
         ],
         temperature: temperature,
         max_tokens: 600
