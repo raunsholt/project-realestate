@@ -54,6 +54,7 @@ export default function Home() {
   const [textInput2, setTextInput2] = useState("");
   const [textInput3, setTextInput3] = useState("");
   const [radioValue, setRadioValue] = useState("");
+  const [inspirationText, setInspirationText] = useState("");
   const [dataField, setDataField] = useState("");
   const [webText, setWebText] = useState("");
   const [printText, setPrintText] = useState("");
@@ -194,6 +195,7 @@ export default function Home() {
           textStyle: selectedStyle.textStyle,
           temperature: selectedStyle.temperature,
           dataField,
+          inspirationText,
         }),
       });
 
@@ -213,7 +215,7 @@ export default function Home() {
       setProgressValue(100);
       setTextGenerated(true);
       setLoadingText(false);
-      setActiveStep(3);
+      setActiveStep(4);
 
       setTimeout(() => {
         setIsModalOpen(false);
@@ -272,18 +274,12 @@ export default function Home() {
   }
 
   const steps = [
-    { title: 'Adresse', description: 'Søg og vælg adresse' },
-    { title: 'Boligdata', description: 'Rediger og godkend data' },
-    { title: 'Argumenter og stil', description: 'Indtast argumenter og vælg stil' },
-    { title: 'Boligtekst', description: 'Se og rediger genereret tekst' },
+    { title: 'Adresse' },
+    { title: 'Boligdata' },
+    { title: 'Salgsargumenter' },
+    { title: 'Skrivestil' },
+    { title: 'Boligtekst' },
   ];
-
-  // const steps = [
-  //   { title: 'Adresse' },
-  //   { title: 'Boligdata' },
-  //   { title: 'Salgsargumenter og skrivestil' },
-  //   { title: 'Boligtekst' },
-  // ];
 
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
@@ -317,7 +313,7 @@ export default function Home() {
                 </Box>
 
                 <Stack width="100%">
-                  <Stepper size='md' colorScheme='teal' index={activeStep} width="100%">
+                  <Stepper size='md' colorScheme='teal' index={activeStep} width="100%" flexWrap="wrap">
                     {steps.map((step, index) => (
                       <Step key={index} onClick={() => setActiveStep(index)}>
                         <StepIndicator>
@@ -327,21 +323,15 @@ export default function Home() {
                             active={<StepNumber />}
                           />
                         </StepIndicator>
-                        <Box flexShrink='0'>
-                          <StepTitle>{step.title}</StepTitle>
-                          {/* <StepDescription>{step.description}</StepDescription> */}
-                        </Box>
                         <StepSeparator />
                       </Step>
                     ))}
                   </Stepper>
-                  <Text>
-                    {/* Step {activeStep + 1}: <b>{step.description}</b> */}
-                  </Text>
                 </Stack>
 
                 {activeStep === 0 && (
                   <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Adresse</Heading>
                     <form onSubmit={onGetData} width="100%">
                       <VStack spacing={4} align="start">
                         <FormControl id="address" isRequired>
@@ -376,6 +366,7 @@ export default function Home() {
 
                 {activeStep === 1 && (
                   <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Boligdata</Heading>
                     <form onSubmit={onAcceptData} width="100%">
                       <VStack spacing={6} width="100%" align="start">
                         <FormControl id="editableDataField" isRequired>
@@ -400,7 +391,8 @@ export default function Home() {
 
                 {activeStep === 2 && (
                   <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
-                    <form onSubmit={onGenerateText} width="100%">
+                    <Heading as="h4" size="md" mb={4}>Argumenter</Heading>
+                    <form onSubmit={() => setActiveStep(3)} width="100%">
                       <VStack spacing={6} width="100%" align="start">
                         <VStack spacing={2} width="100%" align="start">
                           <FormControl id="textInput1" isRequired>
@@ -434,6 +426,17 @@ export default function Home() {
                             />
                           </FormControl>
                         </VStack>
+                        <Button type="submit" colorScheme="teal">Næste</Button>
+                      </VStack>
+                    </form>
+                  </Box>
+                )}
+
+                {activeStep === 3 && (
+                  <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Skrivestil</Heading>
+                    <form onSubmit={onGenerateText} width="100%">
+                      <VStack spacing={6} width="100%" align="start">
                         <FormControl id="radioButtons" isRequired>
                           <FormLabel>Vælg en skrivestil</FormLabel>
                           <RadioGroup onChange={handleRadioChange} value={radioValue} width="100%">
@@ -444,18 +447,32 @@ export default function Home() {
                             </VStack>
                           </RadioGroup>
                         </FormControl>
+                        <FormControl id="inspirationText">
+                          <FormLabel>Indsæt en tekst til inspiration (valgfri)</FormLabel>
+                          <Textarea
+                            placeholder=""
+                            value={inspirationText}
+                            onChange={(e) => setInspirationText(e.target.value)}
+                            size="md"
+                            height="150px"
+                            width="100%"
+                            maxLength={1000}
+                          />
+                          <Text fontSize="sm" textAlign="right" fontStyle="italic">Max 1000 tegn</Text>
+                        </FormControl>
                         <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
                       </VStack>
                     </form>
                   </Box>
                 )}
 
-                {activeStep === 3 && (
+                {activeStep === 4 && (
                   <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Boligtekst</Heading>
                     <VStack spacing={4} width="100%" align="start">
                       <FormControl id="webText">
                         <FormLabel>Hjemmeside</FormLabel>
-                        <Tooltip label="Rediger web teksten" placement="top" hasArrow>
+                        <Tooltip label="Rediger hjemmesideteksten" placement="top" hasArrow>
                           <Textarea
                             ref={webTextRef}
                             placeholder=""
