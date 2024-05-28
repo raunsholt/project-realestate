@@ -1,5 +1,5 @@
 export default async function (req, res) {
-  const { address, dataField, textInput1, textInput2, textInput3, textStyle, temperature } = req.body;
+  const { address, dataField, textInput1, textInput2, textInput3, textStyle, temperature, inspirationText } = req.body;
 
   if (!address || !dataField || !textStyle || !textInput1 || !textInput2 || !textInput3) {
     return res.status(400).json({ error: { message: "Please provide all required fields." } });
@@ -24,10 +24,10 @@ export default async function (req, res) {
       body: JSON.stringify({
         model: 'gpt-4o',
         messages: [
-          { role: 'system', content: `Du er en hjælpsom assistent, der skriver boligsalgstekster.` },
+          { role: 'system', content: `Du er en ekspert ejendomsmægler, der skriver overbevisende boligsalgstekster. Følg bedste praksis for klar kommunikation og tilpas teksten til forskellige medieformater.` },
           { role: 'user', content: `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
           { role: 'user', content: `Her er tre gode grunde til at købe boligen: 1. ${textInput1} 2. ${textInput2} 3. ${textInput3}` },
-          { role: 'user', content: `Skrivestilen skal være ${textStyle}` },
+          { role: 'user', content: `Skrivestilen skal være ${textStyle} og stilistisk (ikke indholdsmæssigt) inspireret af ${inspirationText}` },
           { role: 'user', content: `Generér tre variationer af en salgstekst i den beskrevne skrivestil. En til hjemmesider på 800-1000 tegn med en overskrift. En til butiksvinduer på mindst 400-500 tegn. med en overskrift. Der skal kun være indholdsoverskrifter med prefikset "Overskrift: " og IKKE **Hjemmsider**, **Butiksvindue** eller lignende. En til sociale medier på ca. 200 tegn uden overskrift eller hashtags. Brug tre bindestreger (---) til at adskille afsnittene. Benyt kun bygningsdata, der er relevante ift. købsgrundene.` }
         ],
         temperature: temperature,

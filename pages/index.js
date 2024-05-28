@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Flex,
   useToast,
   Button,
   VStack,
@@ -18,11 +19,6 @@ import {
   HStack,
   Progress,
   Tooltip,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
   List,
   ListItem,
   Modal,
@@ -30,8 +26,18 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalCloseButton,
   Text,
+  Stack,
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  Stepper,
+  useSteps,
 } from "@chakra-ui/react";
 import { generateBuildingText } from '../utils/buildingText';
 import ReactGA from 'react-ga4';
@@ -43,12 +49,12 @@ export default function Home() {
     ReactGA.send('pageview');
   }, []);
 
-  const [expandedIndex, setExpandedIndex] = useState([0]);
   const [address, setAddress] = useState("");
   const [textInput1, setTextInput1] = useState("");
   const [textInput2, setTextInput2] = useState("");
   const [textInput3, setTextInput3] = useState("");
   const [radioValue, setRadioValue] = useState("");
+  const [inspirationText, setInspirationText] = useState("");
   const [dataField, setDataField] = useState("");
   const [webText, setWebText] = useState("");
   const [printText, setPrintText] = useState("");
@@ -151,7 +157,7 @@ export default function Home() {
         isClosable: true,
       });
     } finally {
-      setExpandedIndex([1]);
+      setActiveStep(1);
       setLoading(false);
       setDataFetched(true);
       setLoadingData(false);
@@ -164,7 +170,7 @@ export default function Home() {
   async function onAcceptData(event) {
     event.preventDefault();
     ReactGA.event({ category: 'User', action: 'Clicked Godkend Boligdata' });
-    setExpandedIndex([2]);
+    setActiveStep(2);
     setDataAccepted(true);
   }
 
@@ -189,6 +195,7 @@ export default function Home() {
           textStyle: selectedStyle.textStyle,
           temperature: selectedStyle.temperature,
           dataField,
+          inspirationText,
         }),
       });
 
@@ -208,9 +215,8 @@ export default function Home() {
       setProgressValue(100);
       setTextGenerated(true);
       setLoadingText(false);
-      setExpandedIndex([3]);
+      setActiveStep(4);
 
-      // Juster textarea-felterne her
       setTimeout(() => {
         setIsModalOpen(false);
         if (webTextRef.current) {
@@ -267,6 +273,19 @@ export default function Home() {
     }
   }
 
+  const steps = [
+    { title: 'Adresse' },
+    { title: 'Boligdata' },
+    { title: 'Salgsargumenter' },
+    { title: 'Skrivestil' },
+    { title: 'Boligtekst' },
+  ];
+
+  const { activeStep, setActiveStep } = useSteps({
+    index: 0,
+    count: steps.length,
+  });
+
   return (
     <ChakraProvider theme={customTheme}>
       <Modal isCentered closeOnOverlayClick={false} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -293,198 +312,214 @@ export default function Home() {
                   <Heading as="h3" size="lg">boligtekst.ai</Heading>
                 </Box>
 
-                <Accordion index={expandedIndex} onChange={(index) => setExpandedIndex(index)} width="100%">
-                  <AccordionItem>
-                    <form onSubmit={onGetData}>
-                      <h3>
-                        <AccordionButton>
-                          <Box flex="1" textAlign="left">1. Adresse</Box>
-                          <AccordionIcon />
-                        </AccordionButton>
-                      </h3>
-                      <AccordionPanel pb={4}>
-                        <VStack spacing={4} align="start">
-                          <FormControl id="address" isRequired>
-                            <FormLabel>Søg adresse</FormLabel>
+                <Stack width="100%">
+                  <Stepper size='md' colorScheme='teal' index={activeStep} width="100%" flexWrap="wrap">
+                    {steps.map((step, index) => (
+                      <Step key={index} onClick={() => setActiveStep(index)}>
+                        <StepIndicator>
+                          <StepStatus
+                            complete={<StepIcon />}
+                            incomplete={<StepNumber />}
+                            active={<StepNumber />}
+                          />
+                        </StepIndicator>
+                        <StepSeparator />
+                      </Step>
+                    ))}
+                  </Stepper>
+                </Stack>
+
+                {activeStep === 0 && (
+                  <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Adresse</Heading>
+                    <form onSubmit={onGetData} width="100%">
+                      <VStack spacing={4} align="start">
+                        <FormControl id="address" isRequired>
+                          <FormLabel>Søg adresse</FormLabel>
+                          <Input
+                            type="text"
+                            placeholder=""
+                            value={address}
+                            onChange={handleAddressChange}
+                            width="100%"
+                          />
+                          {suggestions.length > 0 && (
+                            <List position="absolute" top="100%" width="100%" bg="white" border="1px solid #ccc" zIndex="1">
+                              {suggestions.map((suggestion, index) => (
+                                <ListItem key={index} padding="1" cursor="pointer" onClick={() => {
+                                  setAddress(suggestion.tekst);
+                                  setSuggestions([]);
+                                }}>
+                                  {suggestion.tekst}
+                                </ListItem>
+                              ))}
+                            </List>
+                          )}
+                        </FormControl>
+                        <Button type="submit" colorScheme="teal" isLoading={loadingData}>
+                          Hent data
+                        </Button>
+                      </VStack>
+                    </form>
+                  </Box>
+                )}
+
+                {activeStep === 1 && (
+                  <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Boligdata</Heading>
+                    <form onSubmit={onAcceptData} width="100%">
+                      <VStack spacing={6} width="100%" align="start">
+                        <FormControl id="editableDataField" isRequired>
+                          <FormLabel>Rediger, tilføj og godkend data</FormLabel>
+                          <Tooltip label="Du kan redigere og tilføje information her" placement="top" hasArrow>
+                            <Textarea
+                              ref={dataFieldRef}
+                              placeholder=""
+                              value={dataField}
+                              onChange={(e) => setDataField(e.target.value)}
+                              onInput={handleDataFieldInput}
+                              size="md"
+                              width="100%"
+                            />
+                          </Tooltip>
+                        </FormControl>
+                        <Button type="submit" colorScheme="teal">Godkend data</Button>
+                      </VStack>
+                    </form>
+                  </Box>
+                )}
+
+                {activeStep === 2 && (
+                  <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Argumenter</Heading>
+                    <form onSubmit={() => setActiveStep(3)} width="100%">
+                      <VStack spacing={6} width="100%" align="start">
+                        <VStack spacing={2} width="100%" align="start">
+                          <FormControl id="textInput1" isRequired>
+                            <FormLabel>1. Grund til at købe boligen</FormLabel>
                             <Input
                               type="text"
                               placeholder=""
-                              value={address}
-                              onChange={handleAddressChange}
+                              value={textInput1}
+                              onChange={(e) => setTextInput1(e.target.value)}
                               width="100%"
                             />
-                            {suggestions.length > 0 && (
-                              <List position="absolute" top="100%" width="100%" bg="white" border="1px solid #ccc" zIndex="1">
-                                {suggestions.map((suggestion, index) => (
-                                  <ListItem key={index} padding="1" cursor="pointer" onClick={() => {
-                                    setAddress(suggestion.tekst);
-                                    setSuggestions([]);
-                                  }}>
-                                    {suggestion.tekst}
-                                  </ListItem>
-                                ))}
-                              </List>
-                            )}
                           </FormControl>
-                          <Button type="submit" colorScheme="teal" isLoading={loadingData}>
-                            Hent data
-                          </Button>
-                        </VStack>
-                      </AccordionPanel>
-                    </form>
-                  </AccordionItem>
-
-                  <AccordionItem>
-                    <form onSubmit={onAcceptData} width="100%">
-                      <h3>
-                        <AccordionButton>
-                          <Box flex="1" textAlign="left">2. Boligdata</Box>
-                          <AccordionIcon />
-                        </AccordionButton>
-                      </h3>
-                      <AccordionPanel pb={4}>
-                        <VStack spacing={6} width="100%" align="start">
-                          <FormControl id="editableDataField" isRequired>
-                            <FormLabel>Rediger, tilføj og godkend data</FormLabel>
-                            <Tooltip label="Du kan redigere og tilføje information her" placement="top" hasArrow>
-                              <Textarea
-                                ref={dataFieldRef}
-                                placeholder=""
-                                value={dataField}
-                                onChange={(e) => setDataField(e.target.value)}
-                                onInput={handleDataFieldInput}
-                                size="md"
-                                width="100%"
-                              />
-                            </Tooltip>
+                          <FormControl id="textInput2" isRequired>
+                            <FormLabel>2. Grund til at købe boligen</FormLabel>
+                            <Input
+                              type="text"
+                              placeholder=""
+                              value={textInput2}
+                              onChange={(e) => setTextInput2(e.target.value)}
+                              width="100%"
+                            />
                           </FormControl>
-                          <Button type="submit" colorScheme="teal">Godkend data</Button>
-                        </VStack>
-                      </AccordionPanel>
-                    </form>
-                  </AccordionItem>
-
-                  <AccordionItem>
-                    <form onSubmit={onGenerateText} width="100%">
-                      <h3>
-                        <AccordionButton>
-                          <Box flex="1" textAlign="left">3. Salgsargumenter og skrivestil</Box>
-                          <AccordionIcon />
-                        </AccordionButton>
-                      </h3>
-                      <AccordionPanel pb={4}>
-                        <VStack spacing={6} width="100%" align="start">
-                          <VStack spacing={2} width="100%" align="start">
-                            <FormControl id="textInput1" isRequired>
-                              <FormLabel>1. Grund til at købe boligen</FormLabel>
-                              <Input
-                                type="text"
-                                placeholder=""
-                                value={textInput1}
-                                onChange={(e) => setTextInput1(e.target.value)}
-                                width="100%"
-                              />
-                            </FormControl>
-                            <FormControl id="textInput2" isRequired>
-                              <FormLabel>2. Grund til at købe boligen</FormLabel>
-                              <Input
-                                type="text"
-                                placeholder=""
-                                value={textInput2}
-                                onChange={(e) => setTextInput2(e.target.value)}
-                                width="100%"
-                              />
-                            </FormControl>
-                            <FormControl id="textInput3" isRequired>
-                              <FormLabel>3. Grund til at købe boligen</FormLabel>
-                              <Input
-                                type="text"
-                                placeholder=""
-                                value={textInput3}
-                                onChange={(e) => setTextInput3(e.target.value)}
-                                width="100%"
-                              />
-                            </FormControl>
-                          </VStack>
-                          <FormControl id="radioButtons" isRequired>
-                            <FormLabel>Vælg en skrivestil</FormLabel>
-                            <RadioGroup onChange={handleRadioChange} value={radioValue} width="100%">
-                              <VStack spacing={2} align="start" width="100%">
-                                <Radio value="option1">Beskrivende og saglig</Radio>
-                                <Radio value="option2">Moderat</Radio>
-                                <Radio value="option3">Kreativ og malende</Radio>
-                              </VStack>
-                            </RadioGroup>
+                          <FormControl id="textInput3" isRequired>
+                            <FormLabel>3. Grund til at købe boligen</FormLabel>
+                            <Input
+                              type="text"
+                              placeholder=""
+                              value={textInput3}
+                              onChange={(e) => setTextInput3(e.target.value)}
+                              width="100%"
+                            />
                           </FormControl>
-                          <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
                         </VStack>
-                      </AccordionPanel>
-                    </form>
-                  </AccordionItem>
-
-                  <AccordionItem>
-                    <h3>
-                      <AccordionButton>
-                        <Box flex="1" textAlign="left">4. Boligtekst</Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h3>
-                    <AccordionPanel pb={4}>
-                      <VStack spacing={4} width="100%" align="start">
-                        <FormControl id="webText">
-                          <FormLabel>Hjemmeside</FormLabel>
-                          <Tooltip label="Rediger web teksten" placement="top" hasArrow>
-                            <Textarea
-                              ref={webTextRef}
-                              placeholder=""
-                              value={webText}
-                              onChange={handleWebTextChange}
-                              size="md"
-                              width="100%"
-                            />
-                          </Tooltip>
-                          <Text fontSize="sm" textAlign="right" fontStyle="italic">{webTextCount} tegn</Text>
-                        </FormControl>
-                        <FormControl id="printText">
-                          <FormLabel>Vindue</FormLabel>
-                          <Tooltip label="Rediger print teksten" placement="top" hasArrow>
-                            <Textarea
-                              ref={printTextRef}
-                              placeholder=""
-                              value={printText}
-                              onChange={handlePrintTextChange}
-                              size="md"
-                              width="100%"
-                            />
-                          </Tooltip>
-                          <Text fontSize="sm" textAlign="right" fontStyle="italic">{printTextCount} tegn</Text>
-                        </FormControl>
-                        <FormControl id="someText">
-                          <FormLabel>SoMe</FormLabel>
-                          <Tooltip label="Rediger SoMe teksten" placement="top" hasArrow>
-                            <Textarea
-                              ref={someTextRef}
-                              placeholder=""
-                              value={someText}
-                              onChange={handleSomeTextChange}
-                              size="md"
-                              width="100%"
-                            />
-                          </Tooltip>
-                          <Text fontSize="sm" textAlign="right" fontStyle="italic">{someTextCount} tegn</Text>
-                        </FormControl>
-                        <HStack display="flex" justifyContent="space-between" width="100%">
-                          {/* <Button colorScheme="teal" onClick={copyTextToClipboard}>
-                            {copyButtonText}
-                          </Button> */}
-                          <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
-                            Giv feedback
-                          </Button>
-                        </HStack>
+                        <Button type="submit" colorScheme="teal">Næste</Button>
                       </VStack>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
+                    </form>
+                  </Box>
+                )}
+
+                {activeStep === 3 && (
+                  <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Skrivestil</Heading>
+                    <form onSubmit={onGenerateText} width="100%">
+                      <VStack spacing={6} width="100%" align="start">
+                        <FormControl id="radioButtons" isRequired>
+                          <FormLabel>Vælg en skrivestil</FormLabel>
+                          <RadioGroup onChange={handleRadioChange} value={radioValue} width="100%">
+                            <VStack spacing={2} align="start" width="100%">
+                              <Radio value="option1">Beskrivende og saglig</Radio>
+                              <Radio value="option2">Moderat</Radio>
+                              <Radio value="option3">Kreativ og malende</Radio>
+                            </VStack>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormControl id="inspirationText">
+                          <FormLabel>Indsæt en tekst til inspiration (valgfri)</FormLabel>
+                          <Textarea
+                            placeholder=""
+                            value={inspirationText}
+                            onChange={(e) => setInspirationText(e.target.value)}
+                            size="md"
+                            height="150px"
+                            width="100%"
+                            maxLength={1000}
+                          />
+                          <Text fontSize="sm" textAlign="right" fontStyle="italic">Max 1000 tegn</Text>
+                        </FormControl>
+                        <Button type="submit" colorScheme="teal" isLoading={loadingText}>Generér tekst (30 sek.)</Button>
+                      </VStack>
+                    </form>
+                  </Box>
+                )}
+
+                {activeStep === 4 && (
+                  <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
+                    <Heading as="h4" size="md" mb={4}>Boligtekst</Heading>
+                    <VStack spacing={4} width="100%" align="start">
+                      <FormControl id="webText">
+                        <FormLabel>Hjemmeside</FormLabel>
+                        <Tooltip label="Rediger hjemmesideteksten" placement="top" hasArrow>
+                          <Textarea
+                            ref={webTextRef}
+                            placeholder=""
+                            value={webText}
+                            onChange={handleWebTextChange}
+                            size="md"
+                            width="100%"
+                          />
+                        </Tooltip>
+                        <Text fontSize="sm" textAlign="right" fontStyle="italic">{webTextCount} tegn</Text>
+                      </FormControl>
+                      <FormControl id="printText">
+                        <FormLabel>Vindue</FormLabel>
+                        <Tooltip label="Rediger vinduesteksten" placement="top" hasArrow>
+                          <Textarea
+                            ref={printTextRef}
+                            placeholder=""
+                            value={printText}
+                            onChange={handlePrintTextChange}
+                            size="md"
+                            width="100%"
+                          />
+                        </Tooltip>
+                        <Text fontSize="sm" textAlign="right" fontStyle="italic">{printTextCount} tegn</Text>
+                      </FormControl>
+                      <FormControl id="someText">
+                        <FormLabel>SoMe</FormLabel>
+                        <Tooltip label="Rediger SoMe teksten" placement="top" hasArrow>
+                          <Textarea
+                            ref={someTextRef}
+                            placeholder=""
+                            value={someText}
+                            onChange={handleSomeTextChange}
+                            size="md"
+                            width="100%"
+                          />
+                        </Tooltip>
+                        <Text fontSize="sm" textAlign="right" fontStyle="italic">{someTextCount} tegn</Text>
+                      </FormControl>
+                      <HStack display="flex" justifyContent="space-between" width="100%">
+                        <Button colorScheme="purple" as="a" href="https://21wm099ap0x.typeform.com/to/euMts0a2" target="_blank" rel="noopener noreferrer">
+                          Giv feedback
+                        </Button>
+                      </HStack>
+                    </VStack>
+                  </Box>
+                )}
               </VStack>
             </Box>
           </Box>
