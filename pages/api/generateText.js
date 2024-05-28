@@ -24,7 +24,7 @@ export default async function (req, res) {
       body: JSON.stringify({
         model: 'gpt-4o',
         messages: [
-          { role: 'system', content: `Du er en hjælpsom assistent, der skriver boligsalgstekster.` },
+          { role: 'system', content: `Du er en ekspert ejendomsmægler, der skriver overbevisende boligsalgstekster. Følg bedste praksis for klar kommunikation og tilpas teksten til forskellige medieformater.` },
           { role: 'user', content: `Vi har en ejendom beliggende på ${address}. Bygningsdata er som følger: ${dataField}.` },
           { role: 'user', content: `Her er tre gode grunde til at købe boligen: 1. ${textInput1} 2. ${textInput2} 3. ${textInput3}` },
           { role: 'user', content: `Skrivestilen skal være ${textStyle}` },
