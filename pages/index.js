@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useState, useRef, useEffect } from "react";
 import {
-  useBreakpointValue,
   ChakraProvider,
   FormControl,
   FormLabel,
@@ -18,8 +17,7 @@ import {
   Image,
   Box,
   HStack,
-  Progress,
-  Tooltip,
+  Link,
   List,
   ListItem,
   Modal,
@@ -440,17 +438,15 @@ export default function Home() {
                       <VStack spacing={6} width="100%" align="start">
                         <FormControl id="editableDataField" isRequired>
                           <FormLabel>Rediger, tilføj og godkend data</FormLabel>
-                          <Tooltip label="Du kan redigere og tilføje information her" placement="top" hasArrow>
-                            <Textarea
-                              ref={dataFieldRef}
-                              placeholder=""
-                              value={dataField}
-                              onChange={(e) => setDataField(e.target.value)}
-                              onInput={handleDataFieldInput}
-                              size="md"
-                              width="100%"
-                            />
-                          </Tooltip>
+                          <Textarea
+                            ref={dataFieldRef}
+                            placeholder=""
+                            value={dataField}
+                            onChange={(e) => setDataField(e.target.value)}
+                            onInput={handleDataFieldInput}
+                            size="md"
+                            width="100%"
+                          />
                         </FormControl>
                         <Button type="submit" colorScheme="teal">Godkend data</Button>
                       </VStack>
@@ -519,7 +515,7 @@ export default function Home() {
                         <FormControl id="inspirationText">
                           <FormLabel>Indsæt en tekst til inspiration (valgfri)</FormLabel>
                           <Box bg="blue.50" padding="2" mb="2" borderRadius="md">
-                            <Text fontSize='xs'>Modellen vil efterligne skrivestilen - ikke indholdet.</Text>
+                            <Text fontSize='xs'>Modellen vil kun efterligne skrivestilen - ikke indholdet.</Text>
                           </Box>
                           <Textarea
                             placeholder=""
@@ -542,21 +538,19 @@ export default function Home() {
                   <Box bg="white" p={6} borderRadius="md" boxShadow="md" width="100%">
                     <Heading as="h4" size="md" mb={4}>Boligtekst</Heading>
                     <Box bg="blue.50" padding="2" mb="2" borderRadius="md">
-                      <Text fontSize='xs'>Boligteksterne er typisk 90% færdige. Gennemgå dem og foretag de sidste rettelser, inden du bruger dem.</Text>
+                      <Text fontSize='xs'>Boligteksterne er typisk 90% færdige. Gennemgå teksterne og foretag de sidste rettelser, inden du bruger dem.</Text>
                     </Box>
                     <VStack spacing={4} width="100%" align="start">
                       <FormControl id="webText">
                         <FormLabel>Hjemmeside</FormLabel>
-                        <Tooltip label="Rediger hjemmesideteksten" placement="top" hasArrow>
-                          <Textarea
-                            ref={webTextRef}
-                            placeholder=""
-                            value={webText}
-                            onChange={handleWebTextChange}
-                            size="md"
-                            width="100%"
-                          />
-                        </Tooltip>
+                        <Textarea
+                          ref={webTextRef}
+                          placeholder=""
+                          value={webText}
+                          onChange={handleWebTextChange}
+                          size="md"
+                          width="100%"
+                        />
                         <HStack mb="4" display="flex" justifyContent="space-between" width="100%">
                           <Button mt="2" size="xs" onClick={() => copyTextToClipboard(webText, 'webText')}>
                             {copyButtonText.webText}
@@ -567,16 +561,14 @@ export default function Home() {
 
                       <FormControl id="printText">
                         <FormLabel>Vindue</FormLabel>
-                        <Tooltip label="Rediger vinduesteksten" placement="top" hasArrow>
-                          <Textarea
-                            ref={printTextRef}
-                            placeholder=""
-                            value={printText}
-                            onChange={handlePrintTextChange}
-                            size="md"
-                            width="100%"
-                          />
-                        </Tooltip>
+                        <Textarea
+                          ref={printTextRef}
+                          placeholder=""
+                          value={printText}
+                          onChange={handlePrintTextChange}
+                          size="md"
+                          width="100%"
+                        />
                         <HStack mb="4" display="flex" justifyContent="space-between" width="100%">
                           <Button mt="2" size="xs" onClick={() => copyTextToClipboard(printText, 'printText')}>
                             {copyButtonText.printText}
@@ -587,16 +579,14 @@ export default function Home() {
 
                       <FormControl id="someText">
                         <FormLabel>SoMe</FormLabel>
-                        <Tooltip label="Rediger SoMe teksten" placement="top" hasArrow>
-                          <Textarea
-                            ref={someTextRef}
-                            placeholder=""
-                            value={someText}
-                            onChange={handleSomeTextChange}
-                            size="md"
-                            width="100%"
-                          />
-                        </Tooltip>
+                        <Textarea
+                          ref={someTextRef}
+                          placeholder=""
+                          value={someText}
+                          onChange={handleSomeTextChange}
+                          size="md"
+                          width="100%"
+                        />
                         <HStack mb="4" display="flex" justifyContent="space-between" width="100%">
                           <Button mt="2" size="xs" onClick={() => copyTextToClipboard(someText, 'someText')}>
                             {copyButtonText.someText}
@@ -616,6 +606,11 @@ export default function Home() {
                   </Box>
                 )}
               </VStack>
+              <Flex direction="row" mt="4" mb="8" align="center" justify="center" width="100%" textAlign="left">
+                <Box>
+                  <Link href="mailto:support@boligtekst.ai" fontSize="sm" textDecoration="underline">support@boligtekst.ai</Link>
+                </Box>
+              </Flex>
             </Box>
           </Box>
         </Container>
