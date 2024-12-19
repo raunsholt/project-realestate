@@ -608,7 +608,7 @@ export default function Home() {
               </VStack>
               <Flex direction="row" mt="4" mb="8" align="center" justify="center" width="100%" textAlign="left">
                 <Box>
-                  <Link href="mailto:support@boligtekst.ai" fontSize="sm" textDecoration="underline">support@boligtekst.ai</Link>
+                  <Link href="mailto:christianrosenlund@hotmail.com" fontSize="sm" textDecoration="underline">Spørgsmål eller feedback? Skriv til os</Link>
                 </Box>
               </Flex>
             </Box>
